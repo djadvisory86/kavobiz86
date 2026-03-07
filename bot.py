@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 # ══════════════════════════════════════════════════════
 # КОНФІГ — ЗАМІНИ ПЕРЕД ЗАПУСКОМ
 # ══════════════════════════════════════════════════════
-BOT_TOKEN    = "8414849953:AAFeewGPh0BNSWhdY5jGkNdVgFeWVVt51sU"
+BOT_TOKEN    = "ВАШ_ТОКЕН_ВІД_BOTFATHER"
 GROQ_API_KEY = "ВАШ_GROQ_KEY"   # console.groq.com — безкоштовно
 
-ID_VOLODYMYR = 373296886    # свій ID з @userinfobot
+ID_VOLODYMYR = 123456789   # свій ID з @userinfobot
 ID_VYGRAN    = 987654321   # ID Вигрна
 
 DEBT_ALERT   = 15000   # нагадування якщо борг більше цієї суми
@@ -40,14 +40,7 @@ PRICES = {
     "стакан250": {"buy": 0,   "sell": 0,   "my": 0,   "his": 0},
 }
 
-DEFAULT_POINTS = {
-    "Мурчик": "volodymyr", "Вдов": "volodymyr",
-    "Сухопара": "volodymyr", "Гордівка": "volodymyr",
-    "Торканівка": "volodymyr", "Оляниця": "vygran",
-    "Мамина вишня": "vygran", "Клуб": "vygran",
-    "Ася": "vygran", "Ободівка агро": "vygran",
-    "Ковалівка": "vygran", "Корпуса": "vygran",
-}
+DEFAULT_POINTS = {}  # Точки додаються через бота командою /points
 
 # ══════════════════════════════════════════════════════
 # БАЗА ДАНИХ
@@ -290,7 +283,8 @@ def main_kb():
         ["🥛 Молоко / Айріш",   "📥 Постачання"],
         ["💸 Виплата",           "🏠 Оренда / Витрати"],
         ["💰 Баланс",            "📊 Звіт"],
-        ["↩️ Скасувати останнє", "⚙️ Налаштування"],
+        ["📍 Точки",             "↩️ Скасувати останнє"],
+        ["⚙️ Налаштування"],
     ], resize_keyboard=True)
 
 # ══════════════════════════════════════════════════════
@@ -471,14 +465,49 @@ async def cmd_setpin(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def cmd_points(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
     if not ok(uid): return
+    await show_points_menu(update, ctx)
+
+async def show_points_menu(update, ctx):
     d   = load()
     pts = d.get("points", {})
-    my  = [p for p,o in pts.items() if o=="volodymyr"]
-    his = [p for p,o in pts.items() if o=="vygran"]
+    if not pts:
+        kb = InlineKeyboardMarkup([[
+            InlineKeyboardButton("➕ Додати мою точку",    callback_data="padd_vol"),
+            InlineKeyboardButton("➕ Додати точку Коли",   callback_data="padd_vyg"),
+        ]])
+        await update.message.reply_text(
+            "📍 *Точок поки немає*\nДодай першу точку:",
+            parse_mode="Markdown", reply_markup=kb)
+        return
+
+    my  = [(p,o) for p,o in pts.items() if o=="volodymyr"]
+    his = [(p,o) for p,o in pts.items() if o=="vygran"]
+
+    lines = ["📍 *УПРАВЛІННЯ ТОЧКАМИ*\n"]
+    lines.append("*Мої точки:*")
+    for p,_ in my:
+        lines.append(f"  • {p}")
+    lines.append("\n*Точки Коли:*")
+    for p,_ in his:
+        lines.append(f"  • {p}")
+
+    kb_rows = []
+    # Кнопки для кожної точки
+    for p, o in pts.items():
+        short = p[:12]+"…" if len(p)>12 else p
+        kb_rows.append([
+            InlineKeyboardButton(f"✏️ {short}",  callback_data=f"pedit_{p}"),
+            InlineKeyboardButton(f"🔄",          callback_data=f"pswap_{p}"),
+            InlineKeyboardButton(f"🗑️",          callback_data=f"pdel_{p}"),
+        ])
+    kb_rows.append([
+        InlineKeyboardButton("➕ Додати мою",        callback_data="padd_vol"),
+        InlineKeyboardButton("➕ Додати Коли",        callback_data="padd_vyg"),
+    ])
     await update.message.reply_text(
-        f"📍 *МОЇ ТОЧКИ:*\n" + "\n".join(f"  • {p}" for p in my) +
-        f"\n\n📍 *ТОЧКИ ВИГРНА:*\n" + "\n".join(f"  • {p}" for p in his),
-        parse_mode="Markdown"
+        "\n".join(lines),
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(kb_rows)
     )
 
 async def cmd_addpoint(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -486,17 +515,20 @@ async def cmd_addpoint(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not ok(uid): return
     args = ctx.args
     if len(args) < 2:
-        await update.message.reply_text("Приклад: /addpoint НоваТочка vygran")
+        # Інтерактивний режим
+        QUICK[uid] = {"step":"newpoint_name", "owner":"volodymyr"}
+        await update.message.reply_text(
+            "📍 Напиши назву нової точки\n(або /addpoint Назва мій|коля):")
         return
-    owner = args[-1].lower()
+    owner_raw = args[-1].lower()
+    owner = "volodymyr" if owner_raw in ("мій","моя","я","vol","volodymyr") else "vygran"
     name  = " ".join(args[:-1])
-    if owner not in ("volodymyr","vygran"):
-        await update.message.reply_text("Власник: volodymyr або vygran")
-        return
     d = load()
     d["points"][name] = owner
     save(d)
-    await update.message.reply_text(f"✅ Точка *{name}* додана ({owner})", parse_mode="Markdown")
+    who = "моя" if owner == "volodymyr" else "Коли"
+    await update.message.reply_text(
+        f"✅ Точка *{name}* додана ({who})", parse_mode="Markdown")
 
 async def cmd_stock(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
@@ -539,7 +571,7 @@ async def cmd_settings(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         "/history — останні операції\n"
         "/stock — залишки товару\n"
         "/points — список точок\n"
-        "/addpoint — додати точку\n"
+        "/points — управління точками\n"
         "/setpin — PIN для балансу\n"
         "/undo — скасувати останнє\n",
         parse_mode="Markdown"
@@ -608,6 +640,7 @@ async def on_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         point = cb[3:]
         state = QUICK.get(uid, {})
         good  = state.get("good","кава")
+        pending_qty = state.get("pending_qty")
         _, owner = find_point(point, d["points"])
         if "/" in good:
             QUICK[uid] = {"step":"milk_type","point":point,"owner":owner}
@@ -616,9 +649,79 @@ async def on_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton("🍹 Айріш",  callback_data="mg_айріш"),
             ]])
             await q.edit_message_text(f"📍 {point} — що саме?", reply_markup=kb)
+        elif pending_qty:
+            QUICK.pop(uid, None)
+            result = await do_sale(point, owner, {good: pending_qty}, d)
+            await q.edit_message_text(result, parse_mode="Markdown")
+            await check_debt(ctx, d)
         else:
             QUICK[uid] = {"step":"qty","point":point,"owner":owner,"good":good}
             await q.edit_message_text(f"📍 {point} — скільки *{good}*? Введи число:", parse_mode="Markdown")
+        return
+
+    if cb.startswith("pt2_"):
+        parts = cb[4:].rsplit("_", 1)
+        if len(parts) == 2:
+            point, good = parts
+            _, owner = find_point(point, d["points"])
+            QUICK[uid] = {"step":"qty","point":point,"owner":owner,"good":good}
+            await q.edit_message_text(
+                f"📍 *{point}* — скільки *{good}*? Введи число:",
+                parse_mode="Markdown")
+        return
+
+    # ── УПРАВЛІННЯ ТОЧКАМИ ──
+    if cb.startswith("padd_"):
+        owner = "volodymyr" if cb == "padd_vol" else "vygran"
+        QUICK[uid] = {"step": "newpoint_name", "owner": owner}
+        who = "мою" if owner == "volodymyr" else "Коли"
+        await q.edit_message_text(f"✏️ Введи назву нової точки ({who}):")
+        return
+
+    if cb.startswith("pedit_"):
+        point = cb[6:]
+        QUICK[uid] = {"step": "rename_point", "old_name": point}
+        owner = d["points"].get(point, "volodymyr")
+        who = "моя" if owner == "volodymyr" else "Коли"
+        await q.edit_message_text(
+            f"✏️ *{point}* ({who})\n\nВведи нову назву\n(або надішли крапку . щоб скасувати):",
+            parse_mode="Markdown")
+        return
+
+    if cb.startswith("pswap_"):
+        point = cb[6:]
+        old_owner = d["points"].get(point)
+        new_owner = "vygran" if old_owner == "volodymyr" else "volodymyr"
+        d["points"][point] = new_owner
+        save(d)
+        who_old = "моя" if old_owner == "volodymyr" else "Коли"
+        who_new = "моя" if new_owner == "volodymyr" else "Коли"
+        await q.edit_message_text(
+            f"🔄 *{point}*\n{who_old} → *{who_new}*\n\n✅ Збережено!",
+            parse_mode="Markdown")
+        return
+
+    if cb.startswith("pdel_"):
+        point = cb[5:]
+        kb = InlineKeyboardMarkup([[
+            InlineKeyboardButton("✅ Так, видалити", callback_data=f"pdelok_{point}"),
+            InlineKeyboardButton("❌ Скасувати",     callback_data="pdelno"),
+        ]])
+        await q.edit_message_text(
+            f"🗑️ Видалити точку *{point}*?\n\n⚠️ Операції з цією точкою залишаться в історії.",
+            parse_mode="Markdown", reply_markup=kb)
+        return
+
+    if cb.startswith("pdelok_"):
+        point = cb[7:]
+        if point in d["points"]:
+            del d["points"][point]
+            save(d)
+            await q.edit_message_text(f"🗑️ Точку *{point}* видалено.", parse_mode="Markdown")
+        return
+
+    if cb == "pdelno":
+        await q.edit_message_text("❌ Скасовано.")
         return
 
     if cb.startswith("mg_"):
@@ -653,8 +756,244 @@ async def on_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         return
 
 # ══════════════════════════════════════════════════════
-# ОБРОБНИК ТЕКСТУ
+# РОЗУМНИЙ ЛОКАЛЬНИЙ ПАРСИНГ (без AI)
 # ══════════════════════════════════════════════════════
+
+# Словник синонімів товарів — всі можливі написання
+GOOD_ALIASES = {
+    "кава":      ["кав", "кава", "кави", "каву", "кавою", "coffee", "кофе", "коф"],
+    "комплект":  ["компл", "комплект", "комплекти", "комплектів", "комплекту",
+                  "коплект", "коплектів", "комплектов", "компл.", "комп",
+                  "комлпект", "комлпекти", "комлп", "кмплект"],
+    "молоко":    ["молок", "молоко", "молока", "молоку"],
+    "айріш":     ["айріш", "айриш", "irish", "айрiш"],
+    "стакан110": ["ст110", "стакан110", "110мл", "стакани110"],
+    "стакан250": ["ст250", "стакан250", "250мл", "стакани250"],
+}
+
+# Словник синонімів точок — часткові збіги
+POINT_ALIASES = {
+    "мурчик":        ["мурч", "мурчик", "мурчика"],
+    "вдов":          ["вдов"],
+    "сухопара":      ["сухоп", "сухопара"],
+    "гордівка":      ["гордів", "гордівка"],
+    "торканівка":    ["торкан", "торканівка"],
+    "оляниця":       ["олян", "оляниця"],
+    "мамина вишня":  ["мамин", "вишня", "мамина", "мамина вишня"],
+    "клуб":          ["клуб"],
+    "ася":           ["ася"],
+    "ободівка агро": ["ободів", "ободівка", "агро"],
+    "ковалівка":     ["ковалів", "ковалівка"],
+    "корпуса":       ["корпус", "корпуса"],
+}
+
+def normalize_good(word: str) -> str | None:
+    """Повертає стандартну назву товару або None"""
+    w = word.lower().strip()
+    for good, aliases in GOOD_ALIASES.items():
+        if any(w.startswith(a) or a.startswith(w[:4]) for a in aliases if len(w) >= 3):
+            return good
+    return None
+
+def normalize_point(text: str, points: dict) -> tuple[str, str] | tuple[None, None]:
+    """Шукає назву точки в тексті"""
+    tl = text.lower()
+    # Спочатку точний збіг
+    for point, owner in points.items():
+        if point.lower() in tl:
+            return point, owner
+    # Потім по аліасах
+    for key, aliases in POINT_ALIASES.items():
+        for alias in aliases:
+            if alias in tl:
+                # Знаходимо реальну точку в словнику
+                for point, owner in points.items():
+                    if point.lower().startswith(key[:4]):
+                        return point, owner
+    return None, None
+
+def smart_parse_supply(text: str) -> tuple[dict, float]:
+    """Парсить постачання з вільного тексту"""
+    items  = {}
+    amount = 0.0
+    tl     = text.lower()
+
+    # Шукаємо паттерн: число + товар АБО товар + число
+    # Наприклад: "20 комплектів", "+10 кав", "кава 5"
+    tokens = re.findall(r'[\+\-]?\d+|[а-яіїєa-z]+\.?', tl)
+
+    i = 0
+    while i < len(tokens):
+        tok = tokens[i]
+        # Якщо це число
+        if re.match(r'[\+\-]?\d+', tok):
+            num = abs(int(tok))
+            # Дивимось наступний токен — чи це товар?
+            if i + 1 < len(tokens):
+                good = normalize_good(tokens[i+1])
+                if good:
+                    items[good] = items.get(good, 0) + num
+                    i += 2
+                    continue
+        # Якщо це товар — дивимось попередній або наступний токен
+        else:
+            good = normalize_good(tok)
+            if good:
+                # Шукаємо число поруч
+                num = None
+                if i > 0 and re.match(r'[\+\-]?\d+', tokens[i-1]):
+                    num = abs(int(tokens[i-1]))
+                elif i + 1 < len(tokens) and re.match(r'[\+\-]?\d+', tokens[i+1]):
+                    num = abs(int(tokens[i+1]))
+                    i += 1
+                if num:
+                    items[good] = items.get(good, 0) + num
+        i += 1
+
+    # Сума в грн
+    m = re.search(r'(\d+)\s*грн', tl)
+    if m:
+        amount = float(m.group(1))
+
+    return items, amount
+
+async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
+    """
+    Локальний розумний парсинг вільного тексту.
+    Повертає: None якщо не розпізнав (треба AI),
+              "" якщо розпізнав але нічого не зробив,
+              result string якщо виконав операцію.
+    """
+    tl = text.lower().strip()
+
+    # ── ПРОДАЖ: точка + число + товар (в будь-якому порядку) ──
+    point, owner = normalize_point(tl, d["points"])
+    if point:
+        items = {}
+        tokens = re.findall(r'\d+|[а-яіїєa-z]+\.?', tl)
+        i = 0
+        while i < len(tokens):
+            tok = tokens[i]
+            if re.match(r'\d+', tok):
+                num = int(tok)
+                if i + 1 < len(tokens):
+                    good = normalize_good(tokens[i+1])
+                    if good:
+                        items[good] = items.get(good, 0) + num
+                        i += 2; continue
+            else:
+                good = normalize_good(tok)
+                if good:
+                    num = None
+                    if i > 0 and re.match(r'\d+', tokens[i-1]):
+                        num = int(tokens[i-1])
+                    elif i+1 < len(tokens) and re.match(r'\d+', tokens[i+1]):
+                        num = int(tokens[i+1]); i += 1
+                    if num:
+                        items[good] = items.get(good, 0) + num
+                    else:
+                        # Товар є але числа немає — запитуємо кількість
+                        QUICK[uid] = {"step":"qty","point":point,"owner":owner,"good":good}
+                        await update.message.reply_text(
+                            f"📍 *{point}* — скільки *{good}*?",
+                            parse_mode="Markdown")
+                        return ""
+            i += 1
+
+        if items:
+            result = await do_sale(point, owner, items, d)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+
+        # Точка є але немає товарів — питаємо що продав
+        kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("☕ Кава",      callback_data=f"pt2_{point}_кава"),
+             InlineKeyboardButton("📦 Комплект", callback_data=f"pt2_{point}_комплект")],
+            [InlineKeyboardButton("🥛 Молоко",   callback_data=f"pt2_{point}_молоко"),
+             InlineKeyboardButton("🍹 Айріш",    callback_data=f"pt2_{point}_айріш")],
+        ])
+        await update.message.reply_text(
+            f"📍 *{point}* — що продав?", parse_mode="Markdown", reply_markup=kb)
+        return ""
+
+    # ── ТІЛЬКИ ТОВАР БЕЗ ТОЧКИ — питаємо точку ──
+    # Наприклад: "Комплектів", "кава", "5 комплектів"
+    solo_good = None
+    solo_qty  = None
+    tokens = re.findall(r'\d+|[а-яіїєa-z]+\.?', tl)
+    for i, tok in enumerate(tokens):
+        g = normalize_good(tok)
+        if g:
+            solo_good = g
+            # Шукаємо число поряд
+            if i > 0 and re.match(r'\d+', tokens[i-1]):
+                solo_qty = int(tokens[i-1])
+            elif i+1 < len(tokens) and re.match(r'\d+', tokens[i+1]):
+                solo_qty = int(tokens[i+1])
+            break
+
+    if solo_good:
+        if solo_qty:
+            # Є товар і кількість — питаємо точку
+            QUICK[uid] = {"step":"point","good":solo_good,"pending_qty":solo_qty}
+        else:
+            # Є тільки товар — питаємо точку, потім кількість
+            QUICK[uid] = {"step":"point","good":solo_good}
+        pts = list(d["points"].keys())
+        kb  = InlineKeyboardMarkup([[InlineKeyboardButton(p, callback_data=f"pt_{p}")] for p in pts])
+        msg = f"📍 *{solo_good}* — обери точку:"
+        if solo_qty:
+            msg = f"📍 {solo_good} {solo_qty} шт — обери точку:"
+        await update.message.reply_text(msg, parse_mode="Markdown", reply_markup=kb)
+        return ""
+
+    # ── ПОСТАЧАННЯ ──
+    supply_keywords = ["привіз", "поставив", "постачання", "прийшло",
+                       "привезли", "отримав", "закупка", "привіз коля",
+                       "коля привіз", "привіз товар"]
+    has_plus = bool(re.search(r'\+\d', tl))
+    has_supply_word = any(kw in tl for kw in supply_keywords)
+
+    if has_plus or has_supply_word:
+        items, amount = smart_parse_supply(text)
+        if items:
+            result = await do_supply(items, amount, d)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+
+    # ── ВИПЛАТА ──
+    pay_keywords = ["передав", "відав", "віддав", "оплатив", "заплатив",
+                    "розрахував", "повернув", "зп", "зарплата"]
+    m_amount = re.search(r'(\d+)', tl.replace(" ", ""))
+    if any(kw in tl for kw in pay_keywords) and m_amount:
+        amount = float(m_amount.group())
+        payer  = "vygran" if any(w in tl for w in ["коля","він","партнер"]) else "volodymyr"
+        result = await do_payment(amount, payer, d, text)
+        await update.message.reply_text(result, parse_mode="Markdown")
+        return result
+
+    # ── ОРЕНДА ──
+    if any(w in tl for w in ["оренда", "оренди", "оплата оренди"]):
+        m = re.search(r'(\d+)', tl)
+        if m:
+            payer  = "vygran" if any(w in tl for w in ["коля","він"]) else "volodymyr"
+            result = await do_expense("rent", float(m.group(1)), payer, d, text)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+
+    # ── ОБЛАДНАННЯ ──
+    if any(w in tl for w in ["купюрник", "принтер", "обладнання", "купив"]):
+        m = re.search(r'(\d+)', tl)
+        if m:
+            payer  = "vygran" if any(w in tl for w in ["коля","він"]) else "volodymyr"
+            result = await do_expense("equipment", float(m.group(1)), payer, d, text)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+
+    return None  # Передаємо AI
+
+
+
 async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid  = update.effective_user.id
     if not ok(uid): return
@@ -683,6 +1022,7 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if text == "📊 Звіт":          await cmd_report(update, ctx); return
     if text == "↩️ Скасувати останнє": await cmd_undo(update, ctx); return
     if text == "⚙️ Налаштування":  await cmd_settings(update, ctx); return
+    if text == "📍 Точки":         await cmd_points(update, ctx); return
 
     if text in ("☕ Продаж кави","📦 Продаж комплекту","🥛 Молоко / Айріш"):
         gmap = {"☕ Продаж кави":"кава","📦 Продаж комплекту":"комплект","🥛 Молоко / Айріш":"молоко/айріш"}
@@ -751,34 +1091,75 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(result, parse_mode="Markdown")
         await check_debt(ctx, d); return
 
+    if step == "newpoint_name":
+        QUICK.pop(uid, None)
+        if text.strip() == ".":
+            await update.message.reply_text("❌ Скасовано."); return
+        name  = text.strip().title()
+        owner = state.get("owner", "volodymyr")
+        d["points"][name] = owner
+        save(d)
+        who = "моя" if owner == "volodymyr" else "Коли"
+        kb = InlineKeyboardMarkup([[
+            InlineKeyboardButton("➕ Ще одну мою",   callback_data="padd_vol"),
+            InlineKeyboardButton("➕ Ще одну Коли",  callback_data="padd_vyg"),
+        ]])
+        await update.message.reply_text(
+            f"✅ Точка *{name}* додана ({who})\n\nДодати ще?",
+            parse_mode="Markdown", reply_markup=kb)
+        return
+
+    if step == "rename_point":
+        QUICK.pop(uid, None)
+        if text.strip() == ".":
+            await update.message.reply_text("❌ Скасовано."); return
+        old_name = state.get("old_name","")
+        new_name = text.strip().title()
+        if old_name in d["points"]:
+            owner = d["points"].pop(old_name)
+            d["points"][new_name] = owner
+            save(d)
+            who = "моя" if owner == "volodymyr" else "Коли"
+            await update.message.reply_text(
+                f"✅ *{old_name}* → *{new_name}* ({who})",
+                parse_mode="Markdown")
+        return
+
     if step == "supply_text":
         QUICK.pop(uid, None)
-        # Парсимо вручну + AI нижче
-        items  = {}
-        amount = 0.0
-        for g in ("кава","комплект","молоко","айріш","стакан110","стакан250"):
-            m = re.search(rf"(\d+)\s*{g}", text, re.IGNORECASE)
-            if m: items[g] = int(m.group(1))
-        m = re.search(r"(\d+)\s*грн", text, re.IGNORECASE)
-        if m: amount = float(m.group(1))
+        items, amount = smart_parse_supply(text)
         if items:
             result = await do_supply(items, amount, d)
             await update.message.reply_text(result, parse_mode="Markdown")
             await check_debt(ctx, d)
         else:
-            await update.message.reply_text("❓ Не розпізнав товари. Спробуй: _+20 комплектів +10 кава_",
-                                            parse_mode="Markdown")
+            await update.message.reply_text(
+                "❓ Не розпізнав товари. Спробуй:\n"
+                "_+20 комплектів +10 кава_\n"
+                "_20 компл 10 кав 1500грн_",
+                parse_mode="Markdown")
         return
 
-    # Вільний текст — AI
-    msg = await update.message.reply_text("🔍 Розпізнаю...")
+    # Вільний текст — спочатку локальний парсинг, потім AI
+    result = await smart_parse_free(text, d, update, ctx, uid)
+    if result is not None:
+        if result:
+            save(d)
+            await check_debt(ctx, d)
+        return
+
+    # AI як запасний варіант
+    msg = await update.message.reply_text("🔍 Розпізнаю через AI...")
     parsed = await ai_parse(text)
 
     if not parsed or parsed.get("type") == "unknown":
         await msg.edit_text(
             "❓ Не зрозумів. Спробуй:\n"
-            "• _Оляниця 5 кав_\n• _+20 комплектів_\n"
-            "• _Передав 5000_\nАбо скористайся кнопками.",
+            "• _Оляниця 5 кав_\n"
+            "• _+20 комплектів_\n"
+            "• _Передав 5000_\n"
+            "• _Оренда 2000_\n"
+            "Або скористайся кнопками 👇",
             parse_mode="Markdown"
         ); return
 
@@ -788,32 +1169,31 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     point  = parsed.get("point") or ""
     payer  = parsed.get("payer") or "volodymyr"
     comment= parsed.get("comment") or ""
-    result = ""
+    result_text = ""
 
     if ptype == "sale" and point:
         pname, owner = find_point(point, d["points"])
         if pname:
-            result = await do_sale(pname, owner, items, d)
+            result_text = await do_sale(pname, owner, items, d)
         else:
-            result = f"❓ Точка «{point}» не знайдена. /addpoint для додавання."
+            result_text = f"❓ Точка «{point}» не знайдена. /addpoint для додавання."
     elif ptype == "supply" and items:
-        result = await do_supply(items, amount, d, comment)
+        result_text = await do_supply(items, amount, d, comment)
     elif ptype == "payment" and amount:
         if amount >= CONFIRM_SUM:
-            QUICK.pop(uid, None)
             await msg.edit_text("⚠️ Велика сума — чекаю підтвердження...")
             await ask_confirm(update, ctx, f"pay_{uid}_{int(amount)}",
                               f"Виплата: {fm(amount)}", amount,
                               {"op":"payment","payer":payer,"comment":comment})
             return
-        result = await do_payment(amount, payer, d, comment)
+        result_text = await do_payment(amount, payer, d, comment)
     elif ptype in ("rent","equipment","delivery") and amount:
-        result = await do_expense(ptype, amount, payer, d, comment)
+        result_text = await do_expense(ptype, amount, payer, d, comment)
     else:
-        result = f"🤔 Розпізнав як *{ptype}*, але не вистачає даних. Скористайся кнопками."
+        result_text = "🤔 Не вистачає даних. Скористайся кнопками 👇"
 
-    await msg.edit_text(result or "✅ Готово", parse_mode="Markdown")
-    if result:
+    await msg.edit_text(result_text or "✅ Готово", parse_mode="Markdown")
+    if result_text:
         save(d)
         await check_debt(ctx, d)
 
