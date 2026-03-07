@@ -304,7 +304,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <button class="user-btn" onclick="login('vygran')">
         <div class="avatar av-vyg">👤</div>
         <div style="text-align:left">
-          <div>Вигран</div>
+          <div>Коля</div>
           <div style="font-size:.72rem;color:var(--muted);font-weight:400">Постачальник</div>
         </div>
       </button>
@@ -359,7 +359,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div class="stat-sub">кава + комплекти</div>
         </div>
         <div class="stat blue">
-          <div class="stat-label">Продано Вигрна</div>
+          <div class="stat-label">Продано Колі</div>
           <div class="stat-val" id="s-his-sales">0 шт</div>
           <div class="stat-sub">кава + комплекти</div>
         </div>
@@ -449,7 +449,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
                 <input type="number" id="sale-sell-price" min="0" oninput="updateSalePreview()">
               </div>
               <div class="fg">
-                <label>Виплата Вигрну (грн/шт)</label>
+                <label>Виплата Колі (грн/шт)</label>
                 <input type="number" id="sale-payout-price" min="0" oninput="updateSalePreview()">
               </div>
             </div>
@@ -486,8 +486,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <div class="fg">
               <label>Хто платить</label>
               <select id="pay-payer">
-                <option value="volodymyr">Володимир → Вигрну</option>
-                <option value="vygran">Вигран → Володимиру</option>
+                <option value="volodymyr">Володимир → Колі</option>
+                <option value="vygran">Коля → Володимиру</option>
               </select>
             </div>
             <div class="fg">
@@ -510,7 +510,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <div class="fg">
               <label>Хто заплатив</label>
               <select id="exp-payer">
-                <option value="vygran">Вигран</option>
+                <option value="vygran">Коля</option>
                 <option value="volodymyr">Володимир</option>
               </select>
             </div>
@@ -588,7 +588,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <div id="pts-vol"></div>
           </div>
           <div class="point-group">
-            <h3>👤 Вигрна</h3>
+            <h3>👤 Колі</h3>
             <div id="pts-vyg"></div>
           </div>
         </div>
@@ -601,7 +601,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <label>Власник</label>
             <select id="new-point-owner">
               <option value="volodymyr">Володимир</option>
-              <option value="vygran">Вигран</option>
+              <option value="vygran">Коля</option>
             </select>
           </div>
         </div>
@@ -622,7 +622,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div class="fg"><label>Ціна продажу комплекту</label><input type="number" id="p-komplex-sell" placeholder="850"></div>
         </div>
         <div class="form-row">
-          <div class="fg"><label>Комісія з точки Вигрна</label><input type="number" id="p-commission" placeholder="70"></div>
+          <div class="fg"><label>Комісія з точки Колі</label><input type="number" id="p-commission" placeholder="70"></div>
           <div class="fg"><label>Комісія молоко/айріш</label><input type="number" id="p-milkcommission" placeholder="100"></div>
         </div>
         <button class="btn btn-primary" onclick="savePrices()">Зберегти ціни</button>
@@ -724,7 +724,7 @@ function login(user){
   currentUser = user;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('user-label').textContent = user === 'volodymyr' ? 'Володимир' : 'Вигран';
+  document.getElementById('user-label').textContent = user === 'volodymyr' ? 'Володимир' : 'Коля';
   initApp();
 }
 function logout(){
@@ -789,12 +789,12 @@ function renderDashboard(){
     amEl.textContent = fmt(b);
     amEl.classList.add('');
     whoEl.textContent = 'ВИГРАН ВИНЕН';
-    descEl.textContent = 'Вигран винен Володимиру';
+    descEl.textContent = 'Коля винен Володимиру';
   } else {
     amEl.textContent = fmt(b);
     amEl.classList.add('owed');
     whoEl.textContent = 'ВОЛОДИМИР ВИНЕН';
-    descEl.textContent = 'Володимир винен Вигрну';
+    descEl.textContent = 'Володимир винен Колі';
   }
 
   // Прибуток
@@ -818,9 +818,9 @@ function renderDashboard(){
   profitEl.innerHTML = [
     ['Кава мої точки', (sm.кава||0), (p.kava_sell-p.kava_buy)],
     ['Комплекти мої', (sm.комплект||0), (p.komplex_sell-p.komplex_buy)],
-    ['Кава Вигрна', (sh.кава||0), p.commission],
-    ['Комплекти Вигрна', (sh.комплект||0), p.commission],
-    ['Молоко/Айріш Вигрна', (sh.молоко||0)+(sh.айріш||0), p.milk_commission],
+    ['Кава Колі', (sh.кава||0), p.commission],
+    ['Комплекти Колі', (sh.комплект||0), p.commission],
+    ['Молоко/Айріш Колі', (sh.молоко||0)+(sh.айріш||0), p.milk_commission],
   ].map(([lbl,qty,per])=>`
     <div class="profit-row">
       <span class="lbl">${lbl} (${qty} шт × ${per} грн)</span>
@@ -892,7 +892,7 @@ function onPointChange(){
   const point = document.getElementById('sale-point').value;
   const owner = d.points[point];
   document.getElementById('sale-owner-disp').value =
-    owner === 'volodymyr' ? '👤 Мій (Володимир)' : '👤 Вигрна';
+    owner === 'volodymyr' ? '👤 Мій (Володимир)' : '👤 Колі';
   fillDefaultPrices();
   updateSalePreview();
 }
@@ -950,7 +950,7 @@ function updateSalePreview(){
   document.getElementById('sale-preview').innerHTML =
     `💵 Виручка: <b style="color:var(--cream)">${fmt(rev)}</b>`+
     (sellChanged ? ` <span style="color:var(--gold);font-size:.75rem">⚡ змінена</span>` : '')+
-    `&nbsp;&nbsp;Вигрну: <b style="color:var(--red)">${fmt(pay)}</b>`+
+    `&nbsp;&nbsp;Колі: <b style="color:var(--red)">${fmt(pay)}</b>`+
     (payoutChanged ? ` <span style="color:var(--gold);font-size:.75rem">⚡ змінена</span>` : '')+
     `&nbsp;&nbsp;💚 Заробіток: <b style="color:var(--green)">${fmt(earn)}</b>`+
     `<br><span style="font-size:.75rem;color:var(--muted)">${qty} шт × ${sell} грн продаж / ${payout} грн виплата</span>`;
@@ -1024,8 +1024,8 @@ function addPayment(){
   if(!amount||amount<1){ toast('Введи суму','error'); return; }
   const delta  = payer==='volodymyr' ? amount : -amount;
   const desc   = payer==='volodymyr'
-    ? `💸 Володимир → Вигрну: ${fmt(amount)}${comment?' ('+comment+')':''}`
-    : `💸 Вигран → Володимиру: ${fmt(amount)}${comment?' ('+comment+')':''}`;
+    ? `💸 Володимир → Колі: ${fmt(amount)}${comment?' ('+comment+')':''}`
+    : `💸 Коля → Володимиру: ${fmt(amount)}${comment?' ('+comment+')':''}`;
   addTx(d,'payment',desc,amount,delta,{payer,comment});
   document.getElementById('pay-amount').value='';
   document.getElementById('pay-comment').value='';
@@ -1043,7 +1043,7 @@ function addExpense(){
   const half   = amount/2;
   const delta  = payer==='vygran' ? -half : half;
   const names  = {rent:'Оренда',equipment:'Обладнання',delivery:'Доставка'};
-  const desc   = `${names[etype]||etype}: ${fmt(amount)} (платив ${payer==='vygran'?'Вигран':'Володимир'})${comment?' — '+comment:''}`;
+  const desc   = `${names[etype]||etype}: ${fmt(amount)} (платив ${payer==='vygran'?'Коля':'Володимир'})${comment?' — '+comment:''}`;
   addTx(d,etype,desc,amount,delta,{payer,comment});
   document.getElementById('exp-amount').value='';
   document.getElementById('exp-comment').value='';
@@ -1130,7 +1130,7 @@ function renderStock(){
       labels:['Кава','Комплекти','Молоко','Айріш'],
       datasets:[
         {label:'Мої точки',data:[sm.кава||0,sm.комплект||0,sm.молоко||0,sm.айріш||0],backgroundColor:'rgba(212,134,58,.7)',borderRadius:6},
-        {label:'Точки Вигрна',data:[sh.кава||0,sh.комплект||0,sh.молоко||0,sh.айріш||0],backgroundColor:'rgba(90,159,212,.7)',borderRadius:6},
+        {label:'Точки Колі',data:[sh.кава||0,sh.комплект||0,sh.молоко||0,sh.айріш||0],backgroundColor:'rgba(90,159,212,.7)',borderRadius:6},
       ]
     },
     options:{
@@ -1309,7 +1309,7 @@ function initDemo(){
     d.stock.кава-=5; d.stats.his.кава+=5;
     addTx(d,'sale','Продаж Мурчик: 3 комплекти',2040,-2040,{point:'Мурчик',owner:'volodymyr',items:{комплект:3}});
     d.stock.комплект-=3; d.stats.my.комплект+=3;
-    addTx(d,'payment','💸 Володимир → Вигрну: 10 000 грн',10000,10000,{payer:'volodymyr'});
+    addTx(d,'payment','💸 Володимир → Колі: 10 000 грн',10000,10000,{payer:'volodymyr'});
     saveData(d);
   }
 }

@@ -1,5 +1,5 @@
 """
-☕ КавоБот — облік кавового бізнесу Володимир + Вигран
+☕ КавоБот — облік кавового бізнесу Володимир + Коля
 Запуск: python bot.py
 Потрібно: pip install python-telegram-bot aiohttp openpyxl
 """
@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 # ══════════════════════════════════════════════════════
 # КОНФІГ — ЗАМІНИ ПЕРЕД ЗАПУСКОМ
 # ══════════════════════════════════════════════════════
-BOT_TOKEN    = "8414849953:AAFeewGPh0BNSWhdY5jGkNdVgFeWVVt51sU"
+BOT_TOKEN    = "ВАШ_ТОКЕН_ВІД_BOTFATHER"
 GROQ_API_KEY = "ВАШ_GROQ_KEY"   # console.groq.com — безкоштовно
 
-ID_VOLODYMYR = 373296886   # свій ID з @userinfobot
-ID_VYGRAN    = 987654321   # ID Вигрна
+ID_VOLODYMYR = 123456789   # свій ID з @userinfobot
+ID_VYGRAN    = 987654321   # ID Колі
 
 DEBT_ALERT   = 15000   # нагадування якщо борг більше цієї суми
 CONFIRM_SUM  = 5000    # підтвердження обома якщо сума більше
@@ -54,8 +54,8 @@ def load() -> dict:
         "transactions": [],
         "stock": {"кава": 0, "комплект": 0, "молоко": 0, "айріш": 0, "стакан110": 0, "стакан250": 0},
         "balance": 0.0,
-        # balance > 0 = Вигран винен Володимиру
-        # balance < 0 = Володимир винен Вигрну
+        # balance > 0 = Коля винен Володимиру
+        # balance < 0 = Володимир винен Колі
         "weekly_sent": "",
         "stats": {
             "my":  {"кава": 0, "комплект": 0, "молоко": 0, "айріш": 0},
@@ -101,8 +101,8 @@ def fm(v): return f"{abs(v):,.0f} грн".replace(",", " ")
 
 def bal_line(b: float) -> str:
     if abs(b) < 1: return "✅ Рахунки зведені"
-    if b > 0: return f"🔴 Вигран винен Володимиру: *{fm(b)}*"
-    return f"🔴 Володимир винен Коля: *{fm(b)}*"
+    if b > 0: return f"🔴 Коля винен Володимиру: *{fm(b)}*"
+    return f"🔴 Володимир винен Колі: *{fm(b)}*"
 
 def find_point(name: str, points: dict) -> tuple[str, str] | tuple[None, None]:
     name_l = name.lower().strip()
@@ -124,7 +124,7 @@ PENDING    = {}   # key -> {desc, amount, confirmed_by, payer, comment}
 AI_PROMPT = """Ти асистент для обліку кавового бізнесу. Розпізнай операцію і поверни ТІЛЬКИ JSON.
 
 Точки Володимира: Мурчик, Вдов, Сухопара, Гордівка, Торканівка
-Точки Вигрна: Оляниця, Мамина вишня, Клуб, Ася, Ободівка агро, Ковалівка, Корпуса
+Точки Колі: Оляниця, Мамина вишня, Клуб, Ася, Ободівка агро, Ковалівка, Корпуса
 
 Типи: sale=продаж, supply=постачання товару, payment=виплата грошей,
       rent=оренда терміналів, equipment=обладнання, delivery=доставка, unknown=незрозуміло
@@ -190,7 +190,7 @@ async def transcribe(path: str) -> str | None:
 # ОБРОБКА ОПЕРАЦІЙ
 # ══════════════════════════════════════════════════════
 async def do_sale(point: str, owner: str, items: dict, d: dict) -> str:
-    lines = [f"☕ *Продаж — {point}* ({'моя' if owner == 'volodymyr' else 'Вигрна'})\n"]
+    lines = [f"☕ *Продаж — {point}* ({'моя' if owner == 'volodymyr' else 'Колі'})\n"]
     total_pay = 0
     total_rev = 0
     for good, qty in items.items():
@@ -202,7 +202,7 @@ async def do_sale(point: str, owner: str, items: dict, d: dict) -> str:
         rev  = sell * qty
         total_pay += pay * qty
         total_rev += rev
-        lines.append(f"  {good}: {qty} шт × {sell} = {fm(rev)} → Вигрну: {fm(pay*qty)}")
+        lines.append(f"  {good}: {qty} шт × {sell} = {fm(rev)} → Колі: {fm(pay*qty)}")
         # склад
         if good in d["stock"]:
             d["stock"][good] = max(0, d["stock"][good] - qty)
@@ -211,11 +211,11 @@ async def do_sale(point: str, owner: str, items: dict, d: dict) -> str:
         if good in d["stats"][sk]:
             d["stats"][sk][good] += qty
 
-    lines.append(f"\n💰 До виплати Вигрну: *{fm(total_pay)}*")
+    lines.append(f"\n💰 До виплати Колі: *{fm(total_pay)}*")
     lines.append(f"💵 Виручка: {fm(total_rev)}")
     lines.append(f"📈 Твій заробіток: *{fm(total_rev - total_pay)}*")
 
-    # Продали → ми повинні Вигрну більше → баланс зменшується
+    # Продали → ми повинні Колі більше → баланс зменшується
     add_tx(d, "sale", f"Продаж {point}: {items}", total_pay, -total_pay,
            {"point": point, "owner": owner, "items": items})
 
@@ -227,7 +227,7 @@ async def do_sale(point: str, owner: str, items: dict, d: dict) -> str:
     return "\n".join(lines)
 
 async def do_supply(items: dict, amount: float, d: dict, comment: str = "") -> str:
-    lines = ["📥 *Постачання від Вигрна*\n"]
+    lines = ["📥 *Постачання від Колі*\n"]
     total = 0
     for good, qty in items.items():
         if good in d["stock"]:
@@ -249,10 +249,10 @@ async def do_supply(items: dict, amount: float, d: dict, comment: str = "") -> s
 
 async def do_payment(amount: float, payer: str, d: dict, comment: str = "") -> str:
     if payer == "volodymyr":
-        desc  = f"💸 Володимир → Вигрну: *{fm(amount)}*"
+        desc  = f"💸 Володимир → Колі: *{fm(amount)}*"
         delta = amount   # заплатили → борг зменшився → баланс +
     else:
-        desc  = f"💸 Вигран → Володимиру: *{fm(amount)}*"
+        desc  = f"💸 Коля → Володимиру: *{fm(amount)}*"
         delta = -amount
     if comment:
         desc += f"\n💬 {comment}"
@@ -264,10 +264,10 @@ async def do_expense(etype: str, amount: float, payer: str, d: dict, comment: st
     names = {"rent": "🏠 Оренда", "equipment": "🔧 Обладнання", "delivery": "🚚 Доставка"}
     name  = names.get(etype, "💰 Витрата")
     if payer == "vygran":
-        desc  = f"{name}: *{fm(amount)}*\nВигран заплатив → ти йому винен половину ({fm(half)})"
+        desc  = f"{name}: *{fm(amount)}*\nКоля заплатив → ти йому винен половину ({fm(half)})"
         delta = -half
     else:
-        desc  = f"{name}: *{fm(amount)}*\nТи заплатив → Вигран тобі винен половину ({fm(half)})"
+        desc  = f"{name}: *{fm(amount)}*\nТи заплатив → Коля тобі винен половину ({fm(half)})"
         delta = half
     if comment:
         desc += f"\n💬 {comment}"
@@ -734,7 +734,7 @@ async def on_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if cb in ("pay_vol","pay_vyg"):
         payer = "volodymyr" if cb == "pay_vol" else "vygran"
         QUICK[uid] = {"step":"pay_amount","payer":payer}
-        who = "Ти → Вигрну" if payer == "volodymyr" else "Вигран → Тобі"
+        who = "Ти → Колі" if payer == "volodymyr" else "Коля → Тобі"
         await q.edit_message_text(f"💸 {who}\nВведи суму (грн):")
         return
 
@@ -743,7 +743,7 @@ async def on_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         QUICK[uid] = {"step":"exp_payer","etype":etype}
         kb = InlineKeyboardMarkup([[
             InlineKeyboardButton("Я платив",      callback_data="ep_volodymyr"),
-            InlineKeyboardButton("Вигран платив", callback_data="ep_vygran"),
+            InlineKeyboardButton("Коля платив", callback_data="ep_vygran"),
         ]])
         await q.edit_message_text("Хто заплатив?", reply_markup=kb)
         return
@@ -860,16 +860,73 @@ def smart_parse_supply(text: str) -> tuple[dict, float]:
 async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
     """
     Локальний розумний парсинг вільного тексту.
-    Повертає: None якщо не розпізнав (треба AI),
-              "" якщо розпізнав але нічого не зробив,
-              result string якщо виконав операцію.
+    Порядок перевірок:
+      1. Постачання (+ або ключові слова) — найвищий пріоритет
+      2. Виплата
+      3. Оренда / Обладнання
+      4. Продаж (точка + товар)
+      5. Тільки товар (питаємо точку)
     """
     tl = text.lower().strip()
 
-    # ── ПРОДАЖ: точка + число + товар (в будь-якому порядку) ──
+    # ── 1. ПОСТАЧАННЯ — перевіряємо ПЕРШИМ ──
+    # Ключові слова постачання (всі варіанти)
+    supply_keywords = [
+        "привіз", "поставив", "постачання", "прийшло", "привезли",
+        "отримав", "закупка", "привіз коля", "коля привіз", "привіз товар",
+        "прихід", "приход", "прийшов товар", "завіз", "закупили", "купили",
+        "доставка товару", "товар прийшов",
+    ]
+    has_plus        = bool(re.search(r'\+\d', tl))
+    has_supply_word = any(kw in tl for kw in supply_keywords)
+
+    if has_plus or has_supply_word:
+        items, amount = smart_parse_supply(text)
+        if items:
+            result = await do_supply(items, amount, d)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+        # Є ключове слово але не зрозуміли товар — питаємо
+        if has_supply_word:
+            await update.message.reply_text(
+                "📥 Що саме привезли? Наприклад:\n_20 комплектів 10 кава_",
+                parse_mode="Markdown")
+            QUICK[uid] = {"step": "supply_text"}
+            return ""
+
+    # ── 2. ВИПЛАТА ──
+    pay_keywords = ["передав", "відав", "віддав", "оплатив", "заплатив",
+                    "розрахував", "повернув", "зп", "зарплата"]
+    m_amount = re.search(r'(\d+)', tl)
+    if any(kw in tl for kw in pay_keywords) and m_amount:
+        amount = float(m_amount.group())
+        payer  = "vygran" if any(w in tl for w in ["коля","він","партнер"]) else "volodymyr"
+        result = await do_payment(amount, payer, d, text)
+        await update.message.reply_text(result, parse_mode="Markdown")
+        return result
+
+    # ── 3. ОРЕНДА ──
+    if any(w in tl for w in ["оренда", "оренди", "оплата оренди"]):
+        m = re.search(r'(\d+)', tl)
+        if m:
+            payer  = "vygran" if any(w in tl for w in ["коля","він"]) else "volodymyr"
+            result = await do_expense("rent", float(m.group(1)), payer, d, text)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+
+    # ── 4. ОБЛАДНАННЯ ──
+    if any(w in tl for w in ["купюрник", "принтер", "обладнання", "купив апарат"]):
+        m = re.search(r'(\d+)', tl)
+        if m:
+            payer  = "vygran" if any(w in tl for w in ["коля","він"]) else "volodymyr"
+            result = await do_expense("equipment", float(m.group(1)), payer, d, text)
+            await update.message.reply_text(result, parse_mode="Markdown")
+            return result
+
+    # ── 5. ПРОДАЖ: точка + товар ──
     point, owner = normalize_point(tl, d["points"])
     if point:
-        items = {}
+        items  = {}
         tokens = re.findall(r'\d+|[а-яіїєa-z]+\.?', tl)
         i = 0
         while i < len(tokens):
@@ -892,7 +949,6 @@ async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
                     if num:
                         items[good] = items.get(good, 0) + num
                     else:
-                        # Товар є але числа немає — запитуємо кількість
                         QUICK[uid] = {"step":"qty","point":point,"owner":owner,"good":good}
                         await update.message.reply_text(
                             f"📍 *{point}* — скільки *{good}*?",
@@ -905,7 +961,6 @@ async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
             await update.message.reply_text(result, parse_mode="Markdown")
             return result
 
-        # Точка є але немає товарів — питаємо що продав
         kb = InlineKeyboardMarkup([
             [InlineKeyboardButton("☕ Кава",      callback_data=f"pt2_{point}_кава"),
              InlineKeyboardButton("📦 Комплект", callback_data=f"pt2_{point}_комплект")],
@@ -916,8 +971,7 @@ async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
             f"📍 *{point}* — що продав?", parse_mode="Markdown", reply_markup=kb)
         return ""
 
-    # ── ТІЛЬКИ ТОВАР БЕЗ ТОЧКИ — питаємо точку ──
-    # Наприклад: "Комплектів", "кава", "5 комплектів"
+    # ── 6. ТІЛЬКИ ТОВАР — питаємо точку ──
     solo_good = None
     solo_qty  = None
     tokens = re.findall(r'\d+|[а-яіїєa-z]+\.?', tl)
@@ -925,7 +979,6 @@ async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
         g = normalize_good(tok)
         if g:
             solo_good = g
-            # Шукаємо число поряд
             if i > 0 and re.match(r'\d+', tokens[i-1]):
                 solo_qty = int(tokens[i-1])
             elif i+1 < len(tokens) and re.match(r'\d+', tokens[i+1]):
@@ -934,61 +987,14 @@ async def smart_parse_free(text: str, d: dict, update, ctx, uid: int):
 
     if solo_good:
         if solo_qty:
-            # Є товар і кількість — питаємо точку
             QUICK[uid] = {"step":"point","good":solo_good,"pending_qty":solo_qty}
         else:
-            # Є тільки товар — питаємо точку, потім кількість
             QUICK[uid] = {"step":"point","good":solo_good}
         pts = list(d["points"].keys())
         kb  = InlineKeyboardMarkup([[InlineKeyboardButton(p, callback_data=f"pt_{p}")] for p in pts])
-        msg = f"📍 *{solo_good}* — обери точку:"
-        if solo_qty:
-            msg = f"📍 {solo_good} {solo_qty} шт — обери точку:"
+        msg = f"📍 {solo_qty} {solo_good} — обери точку продажу:" if solo_qty else f"📍 *{solo_good}* — обери точку:"
         await update.message.reply_text(msg, parse_mode="Markdown", reply_markup=kb)
         return ""
-
-    # ── ПОСТАЧАННЯ ──
-    supply_keywords = ["привіз", "поставив", "постачання", "прийшло",
-                       "привезли", "отримав", "закупка", "привіз коля",
-                       "коля привіз", "привіз товар"]
-    has_plus = bool(re.search(r'\+\d', tl))
-    has_supply_word = any(kw in tl for kw in supply_keywords)
-
-    if has_plus or has_supply_word:
-        items, amount = smart_parse_supply(text)
-        if items:
-            result = await do_supply(items, amount, d)
-            await update.message.reply_text(result, parse_mode="Markdown")
-            return result
-
-    # ── ВИПЛАТА ──
-    pay_keywords = ["передав", "відав", "віддав", "оплатив", "заплатив",
-                    "розрахував", "повернув", "зп", "зарплата"]
-    m_amount = re.search(r'(\d+)', tl.replace(" ", ""))
-    if any(kw in tl for kw in pay_keywords) and m_amount:
-        amount = float(m_amount.group())
-        payer  = "vygran" if any(w in tl for w in ["коля","він","партнер"]) else "volodymyr"
-        result = await do_payment(amount, payer, d, text)
-        await update.message.reply_text(result, parse_mode="Markdown")
-        return result
-
-    # ── ОРЕНДА ──
-    if any(w in tl for w in ["оренда", "оренди", "оплата оренди"]):
-        m = re.search(r'(\d+)', tl)
-        if m:
-            payer  = "vygran" if any(w in tl for w in ["коля","він"]) else "volodymyr"
-            result = await do_expense("rent", float(m.group(1)), payer, d, text)
-            await update.message.reply_text(result, parse_mode="Markdown")
-            return result
-
-    # ── ОБЛАДНАННЯ ──
-    if any(w in tl for w in ["купюрник", "принтер", "обладнання", "купив"]):
-        m = re.search(r'(\d+)', tl)
-        if m:
-            payer  = "vygran" if any(w in tl for w in ["коля","він"]) else "volodymyr"
-            result = await do_expense("equipment", float(m.group(1)), payer, d, text)
-            await update.message.reply_text(result, parse_mode="Markdown")
-            return result
 
     return None  # Передаємо AI
 
@@ -1040,8 +1046,8 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     if text == "💸 Виплата":
         kb = InlineKeyboardMarkup([[
-            InlineKeyboardButton("Я → Вигрну",    callback_data="pay_vol"),
-            InlineKeyboardButton("Вигран → Мені", callback_data="pay_vyg"),
+            InlineKeyboardButton("Я → Колі",    callback_data="pay_vol"),
+            InlineKeyboardButton("Коля → Мені", callback_data="pay_vyg"),
         ]])
         await update.message.reply_text("💸 Хто кому?", reply_markup=kb); return
 
@@ -1223,8 +1229,8 @@ async def on_voice(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def check_debt(ctx: ContextTypes.DEFAULT_TYPE, d: dict):
     b = abs(d.get("balance", 0))
     if b >= DEBT_ALERT:
-        debtor = "Вигран" if d["balance"] > 0 else "Володимир"
-        cred   = "Володимиру" if d["balance"] > 0 else "Вигрну"
+        debtor = "Коля" if d["balance"] > 0 else "Володимир"
+        cred   = "Володимиру" if d["balance"] > 0 else "Колі"
         msg    = f"🔔 *Нагадування!*\n{debtor} винен {cred} *{fm(b)}*\nЧас розрахуватись? 😊"
         for u in (ID_VOLODYMYR, ID_VYGRAN):
             try: await ctx.bot.send_message(u, msg, parse_mode="Markdown")
