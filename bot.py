@@ -102,7 +102,7 @@ def fm(v): return f"{abs(v):,.0f} грн".replace(",", " ")
 def bal_line(b: float) -> str:
     if abs(b) < 1: return "✅ Рахунки зведені"
     if b > 0: return f"🔴 Вигран винен Володимиру: *{fm(b)}*"
-    return f"🔴 Володимир винен Вигрну: *{fm(b)}*"
+    return f"🔴 Володимир винен Коля: *{fm(b)}*"
 
 def find_point(name: str, points: dict) -> tuple[str, str] | tuple[None, None]:
     name_l = name.lower().strip()
