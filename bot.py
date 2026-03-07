@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 # ══════════════════════════════════════════════════════
 # КОНФІГ — ЗАМІНИ ПЕРЕД ЗАПУСКОМ
 # ══════════════════════════════════════════════════════
-BOT_TOKEN    = "ВАШ_ТОКЕН_ВІД_BOTFATHER"
+BOT_TOKEN    = "8414849953:AAFeewGPh0BNSWhdY5jGkNdVgFeWVVt51sU"
 GROQ_API_KEY = "ВАШ_GROQ_KEY"   # console.groq.com — безкоштовно
 
-ID_VOLODYMYR = 123456789   # свій ID з @userinfobot
+ID_VOLODYMYR = 373296886    # свій ID з @userinfobot
 ID_VYGRAN    = 987654321   # ID Вигрна
 
 DEBT_ALERT   = 15000   # нагадування якщо борг більше цієї суми
