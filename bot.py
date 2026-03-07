@@ -95,7 +95,7 @@ def add_tx(d: dict, ttype: str, desc: str, amount: float, delta: float, meta: di
 # ДОПОМІЖНІ ФУНКЦІЇ
 # ══════════════════════════════════════════════════════
 def ok(uid): return uid in (ID_VOLODYMYR, ID_VYGRAN)
-def uname(uid): return "Володимир" if uid == ID_VOLODYMYR else "Вигран"
+def uname(uid): return "Володимир" if uid == ID_VOLODYMYR else "Коля"
 def other_id(uid): return ID_VYGRAN if uid == ID_VOLODYMYR else ID_VOLODYMYR
 def fm(v): return f"{abs(v):,.0f} грн".replace(",", " ")
 
