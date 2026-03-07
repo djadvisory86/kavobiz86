@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_FILE=/app/data/data.json
+      - PIN_FILE=/app/data/pins.json
+      - EXPORT_DIR=/app/data/exports
