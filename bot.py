@@ -15,7 +15,7 @@ import aiohttp
 logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-BOT_TOKEN    = os.environ.get("8414849953:AAHhn-rrqcn2Dy1gPQagDsCka5YkDbIpE-8")
+BOT_TOKEN    = os.environ.get()
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 ID_VOLODYMYR  = int(os.environ.get("ID_VOLODYMYR",  "373296886"))
