@@ -2,286 +2,210 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>☕ КавоБізнес</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>КавоБіз</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg:       #0c0a08;
-  --s1:       #161210;
-  --s2:       #1f1915;
-  --s3:       #2a2018;
-  --border:   #3d2e1e;
-  --accent:   #d4863a;
-  --gold:     #f0b84a;
-  --cream:    #f5e8d0;
-  --muted:    #8a6a4a;
-  --green:    #5db87a;
-  --red:      #d45a5a;
-  --blue:     #5a9fd4;
+:root{
+  --bg:#0C0A08;--bg2:#131009;--card:#1A1510;--card2:#201A13;
+  --border:#2A2018;--border2:#382B1E;
+  --gold:#C8883A;--gold2:#E8A84A;--gold-dim:#7A5220;
+  --cream:#F0E4CC;--muted:#7A6548;--muted2:#5A4830;
+  --green:#4E9B6A;--red:#C05040;--blue:#4A88B8;
+  --r:14px;--r2:10px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg);color:var(--cream);
-  font-family:'Raleway',sans-serif;min-height:100vh;
-  overflow-x:hidden;
-}
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 40% at 20% 10%, #3a1f0812, transparent),
-    radial-gradient(ellipse 40% 60% at 80% 90%, #1a0f0510, transparent);
-}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--cream);font-family:"DM Sans",sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
 
-/* ── LOGIN ── */
+/* LOGIN */
 #login-screen{
-  position:fixed;inset:0;z-index:100;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bg);
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:100;gap:36px;
+  background-image:radial-gradient(ellipse at 50% 0%,rgba(200,136,58,.1) 0%,transparent 65%);
 }
-.login-box{
-  background:var(--s1);border:1px solid var(--border);
-  border-radius:20px;padding:48px 40px;width:min(380px,90vw);
-  text-align:center;animation:fadeUp .5s ease;
+.login-logo{display:flex;flex-direction:column;align-items:center;gap:14px;animation:logoIn .9s cubic-bezier(.22,1,.36,1)}
+.logo-title{font-family:"Playfair Display",serif;font-size:2.2rem;color:var(--cream);letter-spacing:.02em}
+.logo-sub{font-size:.72rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+.login-cards{display:flex;gap:14px;animation:fadeUp .6s .25s both}
+.login-card{
+  background:var(--card);border:1px solid var(--border2);border-radius:var(--r);
+  padding:28px 32px;text-align:center;cursor:pointer;transition:all .22s;
+  display:flex;flex-direction:column;align-items:center;gap:10px;min-width:140px;
 }
-.login-logo{font-size:3rem;margin-bottom:12px;}
-.login-box h1{
-  font-family:'Raleway',sans-serif;font-weight:900;
-  font-size:1.6rem;color:var(--gold);letter-spacing:-.02em;
-  margin-bottom:6px;
-}
-.login-box p{color:var(--muted);font-size:.85rem;margin-bottom:32px;}
-.user-btns{display:flex;gap:10px;flex-direction:column;}
-.user-btn{
-  padding:14px 20px;border-radius:12px;border:1px solid var(--border);
-  background:var(--s2);color:var(--cream);font-family:'Raleway',sans-serif;
-  font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;gap:12px;
-}
-.user-btn:hover{border-color:var(--accent);background:var(--s3);transform:translateY(-2px);}
-.user-btn .avatar{
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;
-}
-.av-vol{background:#3a2010;}
-.av-vyg{background:#102030;}
+.login-card:hover{background:var(--card2);border-color:var(--gold);transform:translateY(-4px);box-shadow:0 16px 48px rgba(200,136,58,.18)}
+.login-card:active{transform:translateY(-1px)}
+.login-card-icon{font-size:2rem}
+.login-card-name{font-size:.95rem;font-weight:600}
+.login-card-role{font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
 
-/* ── APP ── */
-#app{display:none;}
-.topbar{
-  position:sticky;top:0;z-index:50;
-  background:rgba(12,10,8,.9);backdrop-filter:blur(12px);
+/* APP */
+#app{height:100vh;flex-direction:column;display:none}
+#app.vis{display:flex}
+
+/* HEADER */
+.hdr{
+  background:rgba(12,10,8,.94);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
-  padding:0 20px;height:56px;
+  padding:0 16px;height:54px;
   display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;flex-shrink:0;
 }
-.topbar-left{display:flex;align-items:center;gap:12px;}
-.topbar-logo{font-size:1.2rem;}
-.topbar-title{
-  font-weight:900;font-size:1rem;color:var(--gold);letter-spacing:-.01em;
-}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.user-badge{
-  display:flex;align-items:center;gap:6px;
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:20px;padding:4px 12px 4px 4px;font-size:.8rem;
-}
-.user-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
-.btn-logout{
-  background:transparent;border:1px solid var(--border);
-  color:var(--muted);border-radius:8px;padding:5px 10px;
-  font-size:.75rem;cursor:pointer;transition:all .2s;font-family:'Raleway',sans-serif;
-}
-.btn-logout:hover{border-color:var(--red);color:var(--red);}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-title{font-family:"Playfair Display",serif;font-size:1.05rem;color:var(--cream)}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.sync-btn{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-size:.72rem;padding:5px 10px;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif}
+.sync-btn:hover{border-color:var(--gold);color:var(--gold)}
+.user-pill{background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.user-pill:hover{border-color:var(--gold);color:var(--cream)}
 
-/* ── NAV TABS ── */
-.nav{
-  display:flex;gap:2px;padding:12px 16px;
-  overflow-x:auto;scrollbar-width:none;
-}
-.nav::-webkit-scrollbar{display:none;}
-.nav-btn{
-  flex-shrink:0;padding:8px 16px;border-radius:10px;
-  border:none;background:transparent;color:var(--muted);
-  font-family:'Raleway',sans-serif;font-size:.82rem;font-weight:600;
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-}
-.nav-btn.active{background:var(--accent);color:#fff;}
-.nav-btn:hover:not(.active){background:var(--s2);color:var(--cream);}
+/* NAV */
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;padding:0 2px;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.ni{flex-shrink:0;padding:11px 13px;font-size:.77rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap;user-select:none}
+.ni:hover{color:var(--cream)}
+.ni.on{color:var(--gold);border-bottom-color:var(--gold)}
 
-/* ── MAIN ── */
-.main{padding:0 16px 80px;max-width:900px;margin:0 auto;}
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:14px;max-width:680px;margin:0 auto;width:100%}
+.pg{display:none;animation:fadeUp .28s ease}
+.pg.on{display:block}
 
-/* ── SECTION ── */
-.section{display:none;animation:fadeUp .3s ease;}
-.section.active{display:block;}
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:11px}
+.ctitle{font-size:.67rem;font-weight:600;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.ctitle::after{content:"";flex:1;height:1px;background:var(--border)}
 
-/* ── STAT CARDS ── */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
-.stat{
-  background:var(--s1);border:1px solid var(--border);
-  border-radius:14px;padding:16px;position:relative;overflow:hidden;
+/* BALANCE */
+.bal-hero{
+  background:linear-gradient(135deg,var(--card),#1E1810);
+  border:1px solid var(--border2);border-radius:var(--r);
+  padding:26px 22px;margin-bottom:11px;position:relative;overflow:hidden;
 }
-.stat::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--accent);
-}
-.stat.green::after{background:var(--green);}
-.stat.red::after{background:var(--red);}
-.stat.gold::after{background:var(--gold);}
-.stat.blue::after{background:var(--blue);}
-.stat-label{font-size:.7rem;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
-.stat-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:600;color:var(--cream);}
-.stat-val.green{color:var(--green);}
-.stat-val.red{color:var(--red);}
-.stat-val.gold{color:var(--gold);}
-.stat-sub{font-size:.72rem;color:var(--muted);margin-top:3px;}
+.bal-hero::before{content:"";position:absolute;top:-50px;right:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(200,136,58,.07),transparent 70%);pointer-events:none}
+.bal-label{font-size:.67rem;font-weight:600;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:7px}
+.bal-amt{font-family:"DM Mono",monospace;font-size:2.7rem;font-weight:500;line-height:1;margin-bottom:5px;transition:color .3s}
+.bal-amt.pos{color:var(--gold2)}
+.bal-amt.neg{color:var(--red)}
+.bal-amt.zero{color:var(--green)}
+.bal-desc{font-size:.78rem;color:var(--muted)}
+.bal-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.bstat{background:rgba(255,255,255,.03);border-radius:10px;padding:12px 14px}
+.bstat-v{font-family:"DM Mono",monospace;font-size:1.08rem;font-weight:500}
+.bstat-l{font-size:.67rem;color:var(--muted);margin-top:3px}
 
-/* ── CARD ── */
-.card{
-  background:var(--s1);border:1px solid var(--border);
-  border-radius:14px;padding:18px;margin-bottom:14px;
-}
-.card-hdr{
-  font-size:.72rem;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--accent);margin-bottom:14px;
-}
+/* STAT ROW */
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px}
+.sbox{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:13px 10px;text-align:center}
+.sbox-v{font-family:"DM Mono",monospace;font-size:1.2rem;font-weight:500}
+.sbox-l{font-size:.64rem;color:var(--muted);margin-top:4px;letter-spacing:.04em}
 
-/* ── BALANCE HERO ── */
-.balance-hero{
-  background:linear-gradient(135deg,var(--s2),var(--s3));
-  border:1px solid var(--border);border-radius:18px;
-  padding:28px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;
-}
-.balance-hero::before{
-  content:'☕';position:absolute;right:-10px;top:-10px;
-  font-size:8rem;opacity:.04;transform:rotate(15deg);
-}
-.balance-who{font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
-.balance-amount{
-  font-family:'JetBrains Mono',monospace;
-  font-size:clamp(2rem,6vw,3.2rem);font-weight:600;
-  color:var(--gold);line-height:1;
-}
-.balance-amount.owed{color:var(--red);}
-.balance-amount.clear{color:var(--green);}
-.balance-desc{font-size:.82rem;color:var(--muted);margin-top:8px;}
+/* TX ITEMS */
+.txl{display:flex;flex-direction:column;gap:6px}
+.txi{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:10px 13px;display:flex;align-items:center;gap:11px;transition:background .15s}
+.txi:hover{background:#231D14}
+.txic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.txic.sale{background:rgba(200,136,58,.14)}
+.txic.supply{background:rgba(74,136,184,.14)}
+.txic.payment{background:rgba(78,155,106,.14)}
+.txic.rent,.txic.equipment,.txic.delivery{background:rgba(192,80,64,.12)}
+.txb{flex:1;min-width:0}
+.txd{font-size:.81rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txdt{font-size:.67rem;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px}
+.txa{font-family:"DM Mono",monospace;font-size:.86rem;font-weight:500;white-space:nowrap}
+.txa.pos{color:var(--green)}
+.txa.neg{color:var(--red)}
+.txa.neu{color:var(--muted)}
+.badge{display:inline-block;padding:1px 7px;border-radius:4px;font-size:.65rem;font-weight:600}
+.badge-sale{background:rgba(200,136,58,.14);color:var(--gold)}
+.badge-supply{background:rgba(74,136,184,.14);color:var(--blue)}
+.badge-payment{background:rgba(78,155,106,.14);color:var(--green)}
+.badge-rent,.badge-equipment,.badge-delivery{background:rgba(192,80,64,.1);color:var(--red)}
 
-/* ── ФОРМА ВВЕДЕННЯ ── */
-.form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;}
-label{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
-input,select{
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:8px;padding:9px 12px;
-  color:var(--cream);font-family:'Raleway',sans-serif;font-size:.9rem;
-  outline:none;transition:border-color .2s;width:100%;
-}
-input:focus,select:focus{border-color:var(--accent);}
-select option{background:var(--s2);}
-.btn{
-  padding:10px 18px;border:none;border-radius:9px;
-  font-family:'Raleway',sans-serif;font-size:.88rem;font-weight:700;
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-}
-.btn-primary{background:var(--accent);color:#fff;}
-.btn-primary:hover{background:var(--gold);transform:translateY(-1px);}
-.btn-secondary{background:var(--s2);color:var(--cream);border:1px solid var(--border);}
-.btn-secondary:hover{border-color:var(--accent);}
-.btn-danger{background:transparent;color:var(--red);border:1px solid var(--red);font-size:.78rem;padding:5px 10px;}
-.btn-danger:hover{background:var(--red);color:#fff;}
-.btn-full{width:100%;margin-top:6px;}
+/* CHART */
+.cwrap{height:175px;position:relative;margin-top:4px}
 
-/* ── ТАБЛИЦЯ ── */
-.tbl-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:.82rem;}
-th{
-  text-align:left;padding:9px 10px;
-  color:var(--muted);font-size:.68rem;font-weight:700;
-  letter-spacing:.07em;text-transform:uppercase;
-  border-bottom:1px solid var(--border);white-space:nowrap;
-}
-td{padding:9px 10px;border-bottom:1px solid #1a1208;vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,.02);}
-.badge{
-  display:inline-block;padding:2px 8px;border-radius:5px;
-  font-size:.7rem;font-weight:700;letter-spacing:.04em;
-}
-.badge-sale{background:#3a2010;color:#d4863a;}
-.badge-supply{background:#102030;color:#5a9fd4;}
-.badge-payment{background:#103020;color:#5db87a;}
-.badge-rent{background:#201030;color:#a07ad4;}
-.badge-equipment{background:#202010;color:#d4c45a;}
-.badge-delivery{background:#102020;color:#5ad4c4;}
-.pos{color:var(--green);}
-.neg{color:var(--red);}
+/* STOCK */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sc{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:15px 10px;text-align:center;transition:all .2s}
+.sc.low{border-color:rgba(192,80,64,.5);background:rgba(192,80,64,.06)}
+.se{font-size:1.55rem;margin-bottom:5px}
+.sn{font-size:.67rem;color:var(--muted);margin-bottom:4px}
+.sq{font-family:"DM Mono",monospace;font-size:1.45rem;font-weight:500}
+.sq.low{color:var(--red)}
+.sw{font-size:.6rem;color:var(--red);margin-top:3px}
 
-/* ── STOCK ── */
-.stock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
-.stock-item{
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:12px;padding:14px;text-align:center;
-}
-.stock-item.low{border-color:var(--red);}
-.stock-emoji{font-size:1.8rem;margin-bottom:6px;}
-.stock-name{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:4px;}
-.stock-qty{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:600;}
-.stock-qty.low{color:var(--red);}
-.stock-warn{font-size:.65rem;color:var(--red);margin-top:3px;}
+/* FORM */
+.fl{font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;display:block}
+.fi,.fs{width:100%;background:var(--card2);border:1px solid var(--border2);color:var(--cream);border-radius:var(--r2);padding:10px 13px;font-size:.88rem;font-family:"DM Sans",sans-serif;transition:border-color .2s;outline:none;-webkit-appearance:none}
+.fs{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237A6548' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px}
+.fi:focus,.fs:focus{border-color:var(--gold)}
+.fi::placeholder{color:var(--muted2)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.hint{font-size:.7rem;color:var(--muted);padding:8px 11px;background:rgba(200,136,58,.05);border-radius:6px;border-left:2px solid var(--gold-dim);display:none}
+.prev{padding:10px 13px;background:rgba(200,136,58,.06);border:1px solid rgba(200,136,58,.2);border-radius:var(--r2);font-size:.79rem;line-height:1.6;display:none}
+.mb8{margin-bottom:8px}
+.mb12{margin-bottom:12px}
+.mt8{margin-top:8px}
+.divider{height:1px;background:var(--border);margin:14px 0}
 
-/* ── CHART ── */
-.chart-wrap{position:relative;height:220px;margin-top:8px;}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 18px;border-radius:var(--r2);font-size:.86rem;font-weight:500;cursor:pointer;border:none;font-family:"DM Sans",sans-serif;transition:all .18s}
+.btn-p{background:var(--gold);color:#0C0A08}
+.btn-p:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,136,58,.3)}
+.btn-p:active{transform:none}
+.btn-g{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+.btn-g:hover{border-color:var(--gold);color:var(--cream)}
+.btn-d{background:rgba(192,80,64,.12);border:1px solid rgba(192,80,64,.28);color:var(--red)}
+.btn-d:hover{background:rgba(192,80,64,.22)}
+.btn-w{width:100%;margin-top:7px}
 
-/* ── POINTS ── */
-.points-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.point-group h3{font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
-.point-tag{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:8px;padding:5px 10px;font-size:.8rem;
-  margin:3px;cursor:default;
-}
-.point-dot{width:7px;height:7px;border-radius:50%;}
-.dot-vol{background:var(--accent);}
-.dot-vyg{background:var(--blue);}
+/* POINTS */
+.pt-sec{margin-bottom:14px}
+.pt-hdr{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot-v{background:var(--gold)}
+.dot-k{background:var(--blue)}
+.pt-lbl{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.pt-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.pchip{background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:4px 11px;font-size:.77rem}
 
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:24px;right:24px;z-index:999;
-  background:var(--s1);border:1px solid var(--border);
-  border-radius:12px;padding:12px 18px;
-  font-size:.85rem;font-weight:600;
-  box-shadow:0 8px 32px rgba(0,0,0,.5);
-  transform:translateY(100px);opacity:0;
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);
-  max-width:300px;
-}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.success{border-left:3px solid var(--green);color:var(--green);}
-.toast.error{border-left:3px solid var(--red);color:var(--red);}
-.toast.info{border-left:3px solid var(--accent);color:var(--accent);}
+/* PROFIT ROW */
+.pr{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.pr:last-child{border:none}
+.prl{font-size:.79rem;color:var(--muted)}
+.prv{font-family:"DM Mono",monospace;font-size:.86rem;font-weight:500}
 
-/* ── PROFIT BREAKDOWN ── */
-.profit-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;
-}
-.profit-row:last-child{border-bottom:none;}
-.profit-row .lbl{color:var(--muted);}
-.profit-row .val{font-family:'JetBrains Mono',monospace;font-weight:600;}
+/* SECTION HEADING */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sh h3{font-family:"Playfair Display",serif;font-size:1.05rem;font-weight:600}
+.sh a{font-size:.73rem;color:var(--muted);cursor:pointer;transition:color .15s}
+.sh a:hover{color:var(--gold)}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);border:1px solid var(--border2);color:var(--cream);padding:9px 18px;border-radius:20px;font-size:.8rem;opacity:0;transition:all .22s;z-index:300;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+.toast.info{border-color:var(--gold);color:var(--gold)}
 
-/* ── MOBILE ── */
-@media(max-width:500px){
-  .points-grid{grid-template-columns:1fr;}
-  .balance-amount{font-size:2.2rem;}
+/* HISTORY */
+.hf{display:flex;gap:7px;margin-bottom:11px}
+.empty{text-align:center;color:var(--muted);padding:28px;font-size:.83rem}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes logoIn{from{opacity:0;transform:scale(.88) translateY(12px)}to{opacity:1;transform:none}}
+
+@media(max-width:480px){
+  .bal-amt{font-size:2rem}
+  .fr3{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -289,1031 +213,623 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">☕</div>
-    <h1>КавоБізнес</h1>
-    <p>Облік спільного бізнесу</p>
-    <div class="user-btns">
-      <button class="user-btn" onclick="login('volodymyr')">
-        <div class="avatar av-vol">👤</div>
-        <div style="text-align:left">
-          <div>Володимир</div>
-          <div style="font-size:.72rem;color:var(--muted);font-weight:400">Продавець</div>
-        </div>
-      </button>
-      <button class="user-btn" onclick="login('vygran')">
-        <div class="avatar av-vyg">👤</div>
-        <div style="text-align:left">
-          <div>Коля</div>
-          <div style="font-size:.72rem;color:var(--muted);font-weight:400">Постачальник</div>
-        </div>
-      </button>
+  <div class="login-logo">
+    <svg width="76" height="76" viewBox="0 0 76 76" fill="none" style="filter:drop-shadow(0 0 28px rgba(200,136,58,.35))">
+      <circle cx="38" cy="38" r="37" fill="#1A1510" stroke="#2A2018"/>
+      <!-- saucer -->
+      <ellipse cx="38" cy="54" rx="23" ry="4" fill="#7A5220" opacity=".6"/>
+      <!-- cup body -->
+      <path d="M17 33h42l-4.5 18H21.5L17 33z" fill="url(#cg1)"/>
+      <!-- cup rim -->
+      <rect x="15" y="29" width="46" height="6" rx="3" fill="url(#cg2)"/>
+      <!-- handle -->
+      <path d="M59 37 Q68 37 68 45 Q68 53 59 53" stroke="#C8883A" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <!-- steam -->
+      <path d="M28 26 Q26 22 28 18" stroke="#E8A84A" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".55"/>
+      <path d="M38 24 Q36 19 38 15" stroke="#E8A84A" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".7"/>
+      <path d="M48 26 Q50 22 48 18" stroke="#E8A84A" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".5"/>
+      <defs>
+        <linearGradient id="cg1" x1="17" y1="33" x2="59" y2="51" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#D49040"/>
+          <stop offset="100%" stop-color="#A06828"/>
+        </linearGradient>
+        <linearGradient id="cg2" x1="15" y1="29" x2="61" y2="35" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#E8A84A"/>
+          <stop offset="100%" stop-color="#C8883A"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="logo-title">КавоБіз</div>
+    <div class="logo-sub">Облік кавового бізнесу</div>
+  </div>
+  <div class="login-cards">
+    <div class="login-card" onclick="login('volodymyr')">
+      <div class="login-card-icon">☕</div>
+      <div class="login-card-name">Володимир</div>
+      <div class="login-card-role">Оператор</div>
+    </div>
+    <div class="login-card" onclick="login('vygran')">
+      <div class="login-card-icon">🤝</div>
+      <div class="login-card-name">Коля</div>
+      <div class="login-card-role">Партнер</div>
     </div>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app">
-  <div class="topbar">
-    <div class="topbar-left">
-      <span class="topbar-logo">☕</span>
-      <span class="topbar-title">КавоБізнес</span>
+  <header class="hdr">
+    <div class="hdr-left">
+      <svg width="26" height="26" viewBox="0 0 76 76" fill="none">
+        <circle cx="38" cy="38" r="37" fill="#1A1510" stroke="#2A2018"/>
+        <ellipse cx="38" cy="54" rx="23" ry="4" fill="#7A5220" opacity=".6"/>
+        <path d="M17 33h42l-4.5 18H21.5L17 33z" fill="#C8883A"/>
+        <rect x="15" y="29" width="46" height="6" rx="3" fill="#E8A84A"/>
+        <path d="M59 37 Q68 37 68 45 Q68 53 59 53" stroke="#C8883A" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <path d="M38 24 Q36 19 38 15" stroke="#E8A84A" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".7"/>
+      </svg>
+      <span class="hdr-title">КавоБіз</span>
     </div>
-    <div class="topbar-right">
-      <div class="user-badge">
-        <div class="dot"></div>
-        <span id="user-label">—</span>
-      </div>
-      <button class="btn-logout" onclick="logout()">Вийти</button>
+    <div class="hdr-right">
+      <button class="sync-btn" onclick="syncFromServer()">⟳ Синх</button>
+      <div class="user-pill" id="user-pill" onclick="logout()">— вийти</div>
     </div>
-  </div>
+  </header>
 
   <nav class="nav">
-    <button class="nav-btn active" onclick="showTab('dashboard')">📊 Дашборд</button>
-    <button class="nav-btn" onclick="showTab('add')">➕ Додати</button>
-    <button class="nav-btn" onclick="showTab('history')">📋 Історія</button>
-    <button class="nav-btn" onclick="showTab('stock')">📦 Склад</button>
-    <button class="nav-btn" onclick="showTab('points')">📍 Точки</button>
-    <button class="nav-btn" onclick="showTab('settings')">⚙️ Налаш.</button>
+    <div class="ni on" onclick="goPage('dashboard',this)">📊 Дашборд</div>
+    <div class="ni" onclick="goPage('add',this)">➕ Додати</div>
+    <div class="ni" onclick="goPage('history',this)">📋 Історія</div>
+    <div class="ni" onclick="goPage('stock',this)">📦 Склад</div>
+    <div class="ni" onclick="goPage('points',this)">📍 Точки</div>
+    <div class="ni" onclick="goPage('clients',this)">👥 Клієнти</div>
+    <div class="ni" onclick="goPage('settings',this)">⚙️</div>
   </nav>
 
-  <div class="main">
+  <main class="main">
 
     <!-- DASHBOARD -->
-    <div id="tab-dashboard" class="section active">
-      <div class="balance-hero">
-        <div class="balance-who" id="bal-who">ПОТОЧНИЙ БАЛАНС</div>
-        <div class="balance-amount" id="bal-amount">0 грн</div>
-        <div class="balance-desc" id="bal-desc">Рахунки зведені</div>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat gold">
-          <div class="stat-label">Мій прибуток</div>
-          <div class="stat-val gold" id="s-profit">0 грн</div>
-          <div class="stat-sub">за весь час</div>
-        </div>
-        <div class="stat green">
-          <div class="stat-label">Продано моїх</div>
-          <div class="stat-val green" id="s-my-sales">0 шт</div>
-          <div class="stat-sub">кава + комплекти</div>
-        </div>
-        <div class="stat blue">
-          <div class="stat-label">Продано Колі</div>
-          <div class="stat-val" id="s-his-sales">0 шт</div>
-          <div class="stat-sub">кава + комплекти</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Операцій</div>
-          <div class="stat-val" id="s-txcount">0</div>
-          <div class="stat-sub">всього</div>
+    <div id="pg-dashboard" class="pg on">
+      <div class="bal-hero">
+        <div class="bal-label">Поточний баланс</div>
+        <div class="bal-amt" id="bal-amt">0 грн</div>
+        <div class="bal-desc" id="bal-desc">Рахунки зведені</div>
+        <div class="bal-grid">
+          <div class="bstat"><div class="bstat-v" id="s-profit">0</div><div class="bstat-l">Прибуток</div></div>
+          <div class="bstat"><div class="bstat-v" id="s-txcount">0</div><div class="bstat-l">Операцій</div></div>
         </div>
       </div>
-
+      <div class="sr">
+        <div class="sbox"><div class="sbox-v" id="s-my">0</div><div class="sbox-l">Мої точки</div></div>
+        <div class="sbox"><div class="sbox-v" id="s-his">0</div><div class="sbox-l">Точки Колі</div></div>
+        <div class="sbox"><div class="sbox-v" id="s-debt" style="color:var(--red)">0</div><div class="sbox-l">Борги кл.</div></div>
+      </div>
       <div class="card">
-        <div class="card-hdr">📈 Динаміка балансу</div>
-        <div class="chart-wrap"><canvas id="chart-balance"></canvas></div>
+        <div class="ctitle">📈 Динаміка балансу</div>
+        <div class="cwrap"><canvas id="chart-bal"></canvas></div>
       </div>
-
       <div class="card">
-        <div class="card-hdr">💰 Деталі прибутку</div>
-        <div id="profit-details"></div>
+        <div class="ctitle">💚 Деталі прибутку</div>
+        <div id="profit-det"></div>
       </div>
-
       <div class="card">
-        <div class="card-hdr">🕐 Останні операції</div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr>
-              <th>Дата</th><th>Тип</th><th>Опис</th><th>Сума</th><th>Δ</th>
-            </tr></thead>
-            <tbody id="recent-tbody"></tbody>
-          </table>
-        </div>
+        <div class="sh"><h3>Останні операції</h3><a onclick="goPage('history',document.querySelectorAll('.ni')[2])">Всі →</a></div>
+        <div class="txl" id="recent-list"></div>
       </div>
     </div>
 
     <!-- ADD -->
-    <div id="tab-add" class="section">
+    <div id="pg-add" class="pg">
       <div class="card">
-        <div class="card-hdr">➕ Нова операція</div>
-        <div class="form-row">
-          <div class="fg">
-            <label>Тип операції</label>
-            <select id="op-type" onchange="onOpType()">
-              <option value="sale">☕ Продаж</option>
-              <option value="supply">📥 Постачання</option>
-              <option value="payment">💸 Виплата</option>
-              <option value="rent">🏠 Оренда</option>
-              <option value="equipment">🔧 Обладнання</option>
-              <option value="delivery">🚚 Доставка</option>
-            </select>
-          </div>
+        <div class="ctitle">Тип операції</div>
+        <div class="mb12">
+          <select class="fs" id="op-type" onchange="onOpType()">
+            <option value="sale">☕ Продаж</option>
+            <option value="supply">📥 Постачання</option>
+            <option value="payment">💸 Виплата</option>
+            <option value="rent">🏠 Оренда</option>
+            <option value="equipment">🔧 Обладнання</option>
+            <option value="delivery">🚚 Доставка</option>
+          </select>
         </div>
 
-        <!-- SALE -->
+        <!-- sale -->
         <div id="form-sale">
-          <div class="form-row">
-            <div class="fg">
-              <label>Точка</label>
-              <select id="sale-point" onchange="onPointChange()"></select>
-            </div>
-            <div class="fg">
-              <label>Власник точки</label>
-              <input id="sale-owner-disp" readonly style="color:var(--muted);">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="fg">
-              <label>Товар</label>
-              <select id="sale-good" onchange="onGoodChange()">
+          <div class="mb12"><label class="fl">Точка</label><select class="fs" id="sale-point" onchange="onPtCh()"></select></div>
+          <div class="fr mb12">
+            <div><label class="fl">Власник</label><input class="fi" id="sale-own" readonly style="opacity:.55"></div>
+            <div><label class="fl">Товар</label>
+              <select class="fs" id="sale-good" onchange="onGdCh()">
                 <option value="кава">☕ Кава</option>
                 <option value="комплект">📦 Комплект</option>
                 <option value="молоко">🥛 Молоко</option>
                 <option value="айріш">🍹 Айріш</option>
               </select>
             </div>
-            <div class="fg">
-              <label>Кількість</label>
-              <input type="number" id="sale-qty" min="1" value="1" placeholder="5" oninput="updateSalePreview()">
-            </div>
           </div>
-
-          <div style="background:var(--s2);border:1px dashed var(--border);border-radius:10px;padding:12px;margin-bottom:10px;">
-            <div style="font-size:.7rem;color:var(--accent);font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">
-              ✏️ Ціни для цього продажу — змінюй якщо відрізняються від стандартних
-            </div>
-            <div class="form-row" style="margin-bottom:4px;">
-              <div class="fg">
-                <label>Ціна продажу (грн/шт)</label>
-                <input type="number" id="sale-sell-price" min="0" oninput="updateSalePreview()">
-              </div>
-              <div class="fg">
-                <label>Виплата Колі (грн/шт)</label>
-                <input type="number" id="sale-payout-price" min="0" oninput="updateSalePreview()">
-              </div>
-            </div>
-            <div style="font-size:.72rem;color:var(--muted);margin-top:4px;" id="price-hint"></div>
+          <div class="fr3 mb12">
+            <div><label class="fl">Кількість</label><input class="fi" id="sale-qty" type="number" min="1" value="1" oninput="updPrev()"></div>
+            <div><label class="fl">Ціна продажу</label><input class="fi" id="sale-sell" type="number" placeholder="авто" oninput="updPrev()"></div>
+            <div><label class="fl">Виплата Колі</label><input class="fi" id="sale-pay" type="number" placeholder="авто" oninput="updPrev()"></div>
           </div>
-
-          <div id="sale-preview" style="background:var(--s3);border-radius:9px;padding:12px;margin-bottom:10px;font-size:.85rem;line-height:1.8;min-height:48px;"></div>
-          <button class="btn btn-primary btn-full" onclick="addSale()">✅ Записати продаж</button>
+          <div class="hint" id="price-hint"></div>
+          <div class="prev mt8" id="sale-prev"></div>
+          <button class="btn btn-p btn-w" onclick="addSale()">☕ Записати продаж</button>
         </div>
 
-        <!-- SUPPLY -->
+        <!-- supply -->
         <div id="form-supply" style="display:none">
-          <div class="form-row">
-            <div class="fg"><label>Кава (шт)</label><input type="number" id="sup-kava" min="0" value="0"></div>
-            <div class="fg"><label>Комплекти (шт)</label><input type="number" id="sup-komplex" min="0" value="0"></div>
+          <div class="ctitle" style="margin-bottom:10px">Кількість товарів</div>
+          <div class="fr mb8">
+            <div><label class="fl">☕ Кава</label><input class="fi" id="sup-kava" type="number" min="0" placeholder="0"></div>
+            <div><label class="fl">📦 Комплекти</label><input class="fi" id="sup-komp" type="number" min="0" placeholder="0"></div>
           </div>
-          <div class="form-row">
-            <div class="fg"><label>Молоко (шт)</label><input type="number" id="sup-moloko" min="0" value="0"></div>
-            <div class="fg"><label>Айріш (шт)</label><input type="number" id="sup-irish" min="0" value="0"></div>
+          <div class="fr mb8">
+            <div><label class="fl">🥛 Молоко</label><input class="fi" id="sup-mol" type="number" min="0" placeholder="0"></div>
+            <div><label class="fl">🍹 Айріш</label><input class="fi" id="sup-irish" type="number" min="0" placeholder="0"></div>
           </div>
-          <div class="form-row">
-            <div class="fg"><label>Стакани 110мл (шт)</label><input type="number" id="sup-st110" min="0" value="0"></div>
-            <div class="fg"><label>Стакани 250мл (шт)</label><input type="number" id="sup-st250" min="0" value="0"></div>
+          <div class="fr mb12">
+            <div><label class="fl">🥤 Стакан 110</label><input class="fi" id="sup-st1" type="number" min="0" placeholder="0"></div>
+            <div><label class="fl">🥤 Стакан 250</label><input class="fi" id="sup-st2" type="number" min="0" placeholder="0"></div>
           </div>
-          <div class="form-row">
-            <div class="fg"><label>Загальна сума (грн)</label><input type="number" id="sup-amount" min="0" placeholder="0"></div>
+          <div class="divider"></div>
+          <div class="ctitle" style="margin:10px 0 8px">Нові ціни (якщо змінились)</div>
+          <div class="fr mb8">
+            <div><label class="fl">☕ Кава закупка</label><input class="fi" id="sup-kb" type="number" placeholder="авто"></div>
+            <div><label class="fl">☕ Кава продаж</label><input class="fi" id="sup-ks" type="number" placeholder="авто"></div>
           </div>
-          <button class="btn btn-primary btn-full" onclick="addSupply()">Записати постачання</button>
+          <div class="fr mb12">
+            <div><label class="fl">📦 Компл. закупка</label><input class="fi" id="sup-cb" type="number" placeholder="авто"></div>
+            <div><label class="fl">📦 Компл. продаж</label><input class="fi" id="sup-cs" type="number" placeholder="авто"></div>
+          </div>
+          <label class="fl">Загальна сума (грн)</label>
+          <input class="fi mb12" id="sup-amt" type="number" placeholder="розрахується автоматично">
+          <button class="btn btn-p btn-w" onclick="addSupply()">📥 Записати постачання</button>
         </div>
 
-        <!-- PAYMENT -->
+        <!-- payment -->
         <div id="form-payment" style="display:none">
-          <div class="form-row">
-            <div class="fg">
-              <label>Хто платить</label>
-              <select id="pay-payer">
-                <option value="volodymyr">Володимир → Колі</option>
-                <option value="vygran">Коля → Володимиру</option>
-              </select>
-            </div>
-            <div class="fg">
-              <label>Сума (грн)</label>
-              <input type="number" id="pay-amount" min="1" placeholder="5000">
-            </div>
+          <div class="mb12"><label class="fl">Хто платить</label>
+            <select class="fs" id="pay-who">
+              <option value="volodymyr">Володимир → Колі</option>
+              <option value="vygran">Коля → Володимиру</option>
+            </select>
           </div>
-          <div class="form-row">
-            <div class="fg">
-              <label>Коментар (необов'язково)</label>
-              <input type="text" id="pay-comment" placeholder="Зарплата, розрахунок...">
-            </div>
-          </div>
-          <button class="btn btn-primary btn-full" onclick="addPayment()">Записати виплату</button>
+          <div class="mb12"><label class="fl">Сума (грн)</label><input class="fi" id="pay-amt" type="number" placeholder="0"></div>
+          <div class="mb12"><label class="fl">Коментар</label><input class="fi" id="pay-cmt" placeholder="необов&apos;язково"></div>
+          <button class="btn btn-p btn-w" onclick="addPayment()">💸 Записати виплату</button>
         </div>
 
-        <!-- EXPENSE (rent/equipment/delivery) -->
+        <!-- expense -->
         <div id="form-expense" style="display:none">
-          <div class="form-row">
-            <div class="fg">
-              <label>Хто заплатив</label>
-              <select id="exp-payer">
-                <option value="vygran">Коля</option>
-                <option value="volodymyr">Володимир</option>
-              </select>
-            </div>
-            <div class="fg">
-              <label>Сума (грн)</label>
-              <input type="number" id="exp-amount" min="1" placeholder="2000">
-            </div>
+          <div class="mb12"><label class="fl">Хто платив</label>
+            <select class="fs" id="exp-who">
+              <option value="volodymyr">Володимир</option>
+              <option value="vygran">Коля</option>
+            </select>
           </div>
-          <div class="form-row">
-            <div class="fg">
-              <label>Коментар</label>
-              <input type="text" id="exp-comment" placeholder="Деталі...">
-            </div>
-          </div>
-          <div id="exp-hint" style="font-size:.78rem;color:var(--muted);margin-bottom:10px;"></div>
-          <button class="btn btn-primary btn-full" onclick="addExpense()">Записати витрату</button>
+          <div class="mb12"><label class="fl">Сума (грн)</label><input class="fi" id="exp-amt" type="number" placeholder="0"></div>
+          <div class="mb12"><label class="fl">Коментар</label><input class="fi" id="exp-cmt" placeholder="необов&apos;язково"></div>
+          <div class="hint" id="exp-hint" style="display:block">Витрата ділиться навпіл між партнерами.</div>
+          <button class="btn btn-p btn-w" onclick="addExpense()">🏠 Записати витрату</button>
         </div>
       </div>
     </div>
 
     <!-- HISTORY -->
-    <div id="tab-history" class="section">
-      <div class="card">
-        <div class="card-hdr" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>📋 Всі операції</span>
-          <button class="btn btn-danger" onclick="undoLast()">↩️ Скасувати останнє</button>
-        </div>
-        <div class="form-row" style="margin-bottom:12px;">
-          <div class="fg">
-            <label>Фільтр тип</label>
-            <select id="filter-type" onchange="renderHistory()">
-              <option value="">Всі</option>
-              <option value="sale">Продажі</option>
-              <option value="supply">Постачання</option>
-              <option value="payment">Виплати</option>
-              <option value="rent">Оренда</option>
-              <option value="equipment">Обладнання</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Пошук</label>
-            <input type="text" id="filter-search" placeholder="Назва точки..." oninput="renderHistory()">
-          </div>
-        </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr>
-              <th>#</th><th>Дата</th><th>Тип</th><th>Опис</th><th>Сума</th><th>Δ Баланс</th>
-            </tr></thead>
-            <tbody id="history-tbody"></tbody>
-          </table>
-        </div>
+    <div id="pg-history" class="pg">
+      <div class="hf">
+        <select class="fs" id="ft" onchange="renderHistory()" style="flex:1">
+          <option value="">Всі типи</option>
+          <option value="sale">☕ Продаж</option>
+          <option value="supply">📥 Постачання</option>
+          <option value="payment">💸 Виплата</option>
+          <option value="rent">🏠 Оренда</option>
+        </select>
+        <input class="fi" id="fs" placeholder="🔍 Пошук..." oninput="renderHistory()" style="flex:1.5">
       </div>
+      <div class="txl" id="hist-list"></div>
+      <div id="hist-empty" class="empty" style="display:none">Операцій немає</div>
     </div>
 
     <!-- STOCK -->
-    <div id="tab-stock" class="section">
-      <div class="card">
-        <div class="card-hdr">📦 Залишки на складі</div>
-        <div class="stock-grid" id="stock-grid"></div>
-      </div>
-      <div class="card">
-        <div class="card-hdr">📊 Статистика продажів</div>
-        <div class="chart-wrap"><canvas id="chart-sales"></canvas></div>
-      </div>
+    <div id="pg-stock" class="pg">
+      <div class="card"><div class="ctitle">📦 Залишки</div><div class="sg" id="stock-grid"></div></div>
+      <div class="card"><div class="ctitle">📊 Продажі по товарам</div><div class="cwrap"><canvas id="chart-sales"></canvas></div></div>
     </div>
 
     <!-- POINTS -->
-    <div id="tab-points" class="section">
+    <div id="pg-points" class="pg">
       <div class="card">
-        <div class="card-hdr">📍 Точки продажу</div>
-        <div class="points-grid">
-          <div class="point-group">
-            <h3>👤 Мої (Володимир)</h3>
-            <div id="pts-vol"></div>
-          </div>
-          <div class="point-group">
-            <h3>👤 Колі</h3>
-            <div id="pts-vyg"></div>
-          </div>
+        <div class="pt-sec">
+          <div class="pt-hdr"><div class="dot dot-v"></div><span class="pt-lbl">Мої точки (Володимир)</span></div>
+          <div class="pt-wrap" id="pts-v"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="pt-sec">
+          <div class="pt-hdr"><div class="dot dot-k"></div><span class="pt-lbl">Точки Колі</span></div>
+          <div class="pt-wrap" id="pts-k"></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-hdr">➕ Додати точку</div>
-        <div class="form-row">
-          <div class="fg"><label>Назва точки</label><input type="text" id="new-point-name" placeholder="Нова кав'ярня"></div>
-          <div class="fg">
-            <label>Власник</label>
-            <select id="new-point-owner">
-              <option value="volodymyr">Володимир</option>
-              <option value="vygran">Коля</option>
-            </select>
-          </div>
+        <div class="ctitle">Додати точку</div>
+        <div class="fr mb8">
+          <input class="fi" id="np-name" placeholder="Назва точки">
+          <select class="fs" id="np-own"><option value="volodymyr">Мій</option><option value="vygran">Колі</option></select>
         </div>
-        <button class="btn btn-primary" onclick="addPoint()">Додати точку</button>
+        <button class="btn btn-p" onclick="addPoint()">➕ Додати</button>
+      </div>
+    </div>
+
+    <!-- CLIENTS -->
+    <div id="pg-clients" class="pg">
+      <div class="card"><div class="ctitle">👥 Борги клієнтів</div><div id="cl-list"></div></div>
+      <div class="card">
+        <div class="ctitle">Додати клієнта</div>
+        <div class="fr mb8">
+          <input class="fi" id="nc-name" placeholder="Ім&apos;я клієнта">
+          <input class="fi" id="nc-debt" type="number" placeholder="Борг (грн)">
+        </div>
+        <button class="btn btn-p" onclick="addClient()">➕ Додати</button>
       </div>
     </div>
 
     <!-- SETTINGS -->
-    <div id="tab-settings" class="section">
+    <div id="pg-settings" class="pg">
       <div class="card">
-        <div class="card-hdr">⚙️ Налаштування цін</div>
-        <div class="form-row">
-          <div class="fg"><label>Собівартість кави</label><input type="number" id="p-kava-buy" placeholder="530"></div>
-          <div class="fg"><label>Ціна продажу кави</label><input type="number" id="p-kava-sell" placeholder="700"></div>
+        <div style="font-size:.67rem;font-weight:600;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">Сервер</div>
+        <label class="fl">Токен (перші 20 символів BOT_TOKEN)</label>
+        <div class="fr mb8"><input class="fi" id="srv-tok" placeholder="Вставте токен..."><button class="btn btn-g" onclick="saveTok()">💾</button></div>
+        <button class="btn btn-g btn-w" onclick="syncFromServer()">⬇️ Завантажити з сервера</button>
+        <div class="divider"></div>
+        <div style="font-size:.67rem;font-weight:600;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">Ціни</div>
+        <div class="fr mb8">
+          <div><label class="fl">☕ Кава закупка</label><input class="fi" id="p-kb" type="number"></div>
+          <div><label class="fl">☕ Кава продаж</label><input class="fi" id="p-ks" type="number"></div>
         </div>
-        <div class="form-row">
-          <div class="fg"><label>Собівартість комплекту</label><input type="number" id="p-komplex-buy" placeholder="680"></div>
-          <div class="fg"><label>Ціна продажу комплекту</label><input type="number" id="p-komplex-sell" placeholder="850"></div>
+        <div class="fr mb8">
+          <div><label class="fl">📦 Компл. закупка</label><input class="fi" id="p-cb" type="number"></div>
+          <div><label class="fl">📦 Компл. продаж</label><input class="fi" id="p-cs" type="number"></div>
         </div>
-        <div class="form-row">
-          <div class="fg"><label>Комісія з точки Колі</label><input type="number" id="p-commission" placeholder="70"></div>
-          <div class="fg"><label>Комісія молоко/айріш</label><input type="number" id="p-milkcommission" placeholder="100"></div>
+        <div class="fr mb12">
+          <div><label class="fl">Комісія Колі</label><input class="fi" id="p-com" type="number"></div>
+          <div><label class="fl">Молоко/Айріш</label><input class="fi" id="p-milk" type="number"></div>
         </div>
-        <button class="btn btn-primary" onclick="savePrices()">Зберегти ціни</button>
-      </div>
-      <div class="card">
-        <div class="card-hdr">🔗 Синхронізація з сервером (Railway)</div>
-        <div class="form-row" style="margin-bottom:10px;">
-          <div class="fg">
-            <label>Токен (перші 20 символів BOT_TOKEN)</label>
-            <input type="password" id="server-token-input" placeholder="Вставити токен..." oninput="saveServerToken()">
-          </div>
+        <button class="btn btn-p" onclick="savePrices()">💾 Зберегти ціни</button>
+        <div class="divider"></div>
+        <div style="font-size:.67rem;font-weight:600;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">Дані</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-g" onclick="exportJSON()">📤 Експорт</button>
+          <button class="btn btn-g" onclick="importJSON()">📥 Імпорт</button>
+          <button class="btn btn-g" onclick="undoLast()">↩️ Скасувати</button>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-          <button class="btn btn-primary" onclick="syncFromServer()">⬇️ Завантажити з сервера</button>
-        </div>
-        <div style="font-size:.75rem;color:var(--muted);line-height:1.6;">
-          📌 Відкривай дашборд за Railway URL (наприклад <code style="color:var(--accent)">https://kavobiz.railway.app</code>)<br>
-          Токен = перші 20 символів твого BOT_TOKEN (з .env або Railway Variables)<br>
-          Дані зберігаються на сервері і синхронізуються автоматично при кожному записі.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-hdr">💾 Локальні дані</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-secondary" onclick="exportJSON()">📥 Експорт JSON</button>
-          <button class="btn btn-secondary" onclick="importJSON()">📤 Імпорт JSON</button>
-          <button class="btn btn-danger" onclick="resetAll()">🗑️ Скинути всі дані</button>
-        </div>
-        <input type="file" id="import-file" accept=".json" style="display:none" onchange="doImport(event)">
+        <input type="file" id="imp-file" style="display:none" accept=".json" onchange="doImport(event)">
+        <button class="btn btn-d btn-w mt8" onclick="resetAll()">🗑️ Скинути всі дані</button>
       </div>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /app -->
-
+  </main>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
-// ДАНІ
-// ══════════════════════════════════════════
-const DEFAULT_DATA = {
-  points: {
-    "Мурчик":"volodymyr","Вдов":"volodymyr","Сухопара":"volodymyr",
-    "Гордівка":"volodymyr","Торканівка":"volodymyr",
-    "Оляниця":"vygran","Мамина вишня":"vygran","Клуб":"vygran",
-    "Ася":"vygran","Ободівка агро":"vygran","Ковалівка":"vygran","Корпуса":"vygran",
-  },
-  prices: { kava_buy:530, kava_sell:700, komplex_buy:680, komplex_sell:850, commission:70, milk_commission:100 },
-  transactions: [],
-  stock: { кава:0, комплект:0, молоко:0, айріш:0, стакан110:0, стакан250:0 },
-  balance: 0,
-  stats: {
-    my:  {кава:0,комплект:0,молоко:0,айріш:0},
-    his: {кава:0,комплект:0,молоко:0,айріш:0},
-  }
+const DEF={
+  points:{"Мурчик":"volodymyr","Вдов":"volodymyr","Сухопара":"volodymyr","Гордівка":"volodymyr","Торканівка":"volodymyr","Оляниця":"vygran","Мамина вишня":"vygran","Клуб":"vygran","Ася":"vygran","Ободівка агро":"vygran","Ковалівка":"vygran","Корпуса":"vygran"},
+  prices:{kava_buy:530,kava_sell:700,komplex_buy:680,komplex_sell:850,commission:70,milk_commission:100},
+  transactions:[],clients:{},
+  stock:{кава:0,комплект:0,молоко:0,айріш:0,стакан110:0,стакан250:0},
+  balance:0,stats:{my:{кава:0,комплект:0,молоко:0,айріш:0},his:{кава:0,комплект:0,молоко:0,айріш:0}}
 };
+const SRV=(location.hostname&&location.protocol!=="file:")?location.origin:null;
+let TOK=localStorage.getItem("stok")||"";
+let CU=null,BC=null,SC=null;
 
-// ── Визначаємо чи відкрито з сервера чи локально ──
-const SERVER_URL = (location.hostname && location.hostname !== '' && location.protocol !== 'file:')
-  ? location.origin : null;
-let SERVER_TOKEN = localStorage.getItem('server_token') || '';
-
-function loadData(){ return JSON.parse(localStorage.getItem('kavobiz') || JSON.stringify(DEFAULT_DATA)); }
-function saveData(d){
-  localStorage.setItem('kavobiz', JSON.stringify(d));
-  if(SERVER_URL && SERVER_TOKEN) syncToServer(d).catch(()=>{});
-}
-
-async function syncToServer(d){
-  await fetch(SERVER_URL+'/api/data',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-Token':SERVER_TOKEN},
-    body:JSON.stringify(d)
-  });
-}
-
+function ld(){return JSON.parse(localStorage.getItem("kavobiz")||JSON.stringify(DEF));}
+function sd(d){localStorage.setItem("kavobiz",JSON.stringify(d));if(SRV&&TOK)stS(d).catch(()=>{});}
+async function stS(d){await fetch(SRV+"/api/data",{method:"POST",headers:{"Content-Type":"application/json","X-Token":TOK},body:JSON.stringify(d)});}
 async function syncFromServer(){
-  if(!SERVER_URL){ toast('Відкрий дашборд з Railway URL','error'); return; }
-  if(!SERVER_TOKEN){ toast('Введи токен у Налаштуваннях','error'); return; }
+  if(!SRV){toast("Відкрий з Railway","error");return;}
+  if(!TOK){toast("Введи токен","error");return;}
   try{
-    const r = await fetch(SERVER_URL+'/api/data',{headers:{'X-Token':SERVER_TOKEN}});
-    if(r.status===401){ toast('Невірний токен','error'); return; }
-    const data = await r.json();
-    if(!data.transactions){ toast('Помилка даних','error'); return; }
-    localStorage.setItem('kavobiz',JSON.stringify(data));
-    renderAll();
-    toast('✅ Синхронізовано з сервером!','success');
-  }catch(e){ toast('Сервер недоступний: '+e.message,'error'); }
+    const r=await fetch(SRV+"/api/data",{headers:{"X-Token":TOK}});
+    if(r.status===401){toast("Невірний токен","error");return;}
+    const data=await r.json();
+    if(!data.transactions){toast("Помилка","error");return;}
+    localStorage.setItem("kavobiz",JSON.stringify(data));
+    ra();toast("✅ Синхронізовано!","success");
+  }catch(e){toast("Сервер недоступний","error");}
 }
 
-let currentUser = null;
-let balChart = null, salesChart = null;
-
-// ══════════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════════
-function login(user){
-  currentUser = user;
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('user-label').textContent = user === 'volodymyr' ? 'Володимир' : 'Коля';
-  initApp();
+function login(u){
+  CU=u;
+  document.getElementById("login-screen").style.display="none";
+  const a=document.getElementById("app");a.style.display="flex";a.classList.add("vis");
+  document.getElementById("user-pill").textContent=(u==="volodymyr"?"☕ Володимир":"🤝 Коля")+" · вийти";
+  init();
 }
-function logout(){
-  currentUser = null;
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-}
+function logout(){CU=null;document.getElementById("login-screen").style.display="flex";const a=document.getElementById("app");a.style.display="none";a.classList.remove("vis");}
 
-// ══════════════════════════════════════════
-// ІНІЦІАЛІЗАЦІЯ
-// ══════════════════════════════════════════
-function initApp(){
-  populatePointSelect();
-  loadPriceSettings();
-  renderAll();
+function goPage(n,el){
+  document.querySelectorAll(".pg").forEach(p=>p.classList.remove("on"));
+  document.querySelectorAll(".ni").forEach(x=>x.classList.remove("on"));
+  document.getElementById("pg-"+n).classList.add("on");
+  if(el)el.classList.add("on");
+  if(n==="dashboard")rDash();
+  if(n==="stock")rStock();
+  if(n==="history")renderHistory();
+  if(n==="points")rPts();
+  if(n==="clients")rCl();
+  if(n==="add"){fillPts();onOpType();}
+  if(n==="settings")ldSet();
 }
 
-function renderAll(){
-  renderDashboard();
-  renderHistory();
-  renderStock();
-  renderPoints();
+function init(){fillPts();ldSet();ra();}
+function ra(){rDash();renderHistory();rStock();rPts();rCl();}
+
+function gp(d){return d.prices||DEF.prices;}
+function cpay(g,o,d){const p=gp(d);if(g==="кава")return o==="volodymyr"?p.kava_buy:p.kava_sell-p.commission;if(g==="комплект")return o==="volodymyr"?p.komplex_buy:p.komplex_sell-p.commission;if(g==="молоко"||g==="айріш")return o==="vygran"?p.milk_commission:0;return 0;}
+function csp(g,d){const p=gp(d);if(g==="кава")return p.kava_sell;if(g==="комплект")return p.komplex_sell;return 0;}
+function fmt(v){return Math.abs(v).toLocaleString("uk-UA",{maximumFractionDigits:0})+" грн";}
+
+function rDash(){
+  const d=ld();const b=d.balance||0;
+  const ae=document.getElementById("bal-amt");
+  ae.className="bal-amt";
+  if(Math.abs(b)<1){ae.textContent="✅ Зведено";ae.classList.add("zero");document.getElementById("bal-desc").textContent="Рахунки зведені";}
+  else if(b>0){ae.textContent=fmt(b);ae.classList.add("pos");document.getElementById("bal-desc").textContent="Коля винен Володимиру";}
+  else{ae.textContent=fmt(Math.abs(b));ae.classList.add("neg");document.getElementById("bal-desc").textContent="Володимир винен Колі";}
+  const sm=d.stats?.my||{},sh=d.stats?.his||{},p=gp(d);
+  const profit=(sm.кава||0)*(p.kava_sell-p.kava_buy)+(sm.комплект||0)*(p.komplex_sell-p.komplex_buy)+(sh.кава||0)*p.commission+(sh.комплект||0)*p.commission+((sh.молоко||0)+(sh.айріш||0))*p.milk_commission;
+  document.getElementById("s-profit").textContent=fmt(profit);
+  document.getElementById("s-txcount").textContent=(d.transactions||[]).length;
+  document.getElementById("s-my").textContent=(sm.кава||0)+(sm.комплект||0);
+  document.getElementById("s-his").textContent=(sh.кава||0)+(sh.комплект||0);
+  const cd=Object.values(d.clients||{}).reduce((s,c)=>s+(c.debt||0),0);
+  document.getElementById("s-debt").textContent=cd>0?fmt(cd):"0";
+  document.getElementById("profit-det").innerHTML=[
+    ["☕ Кава — мої точки",sm.кава||0,p.kava_sell-p.kava_buy],
+    ["📦 Комплекти — мої",sm.комплект||0,p.komplex_sell-p.komplex_buy],
+    ["☕ Кава — точки Колі",sh.кава||0,p.commission],
+    ["📦 Комплекти Колі",sh.комплект||0,p.commission],
+    ["🥛 Молоко/Айріш Колі",(sh.молоко||0)+(sh.айріш||0),p.milk_commission],
+  ].map(([l,q,per])=>`<div class="pr"><span class="prl">${l} <span style="color:var(--muted2)">(${q}×${per})</span></span><span class="prv">${fmt(q*per)}</span></div>`).join("");
+  bldBal(d);
+  const txs=[...(d.transactions||[])].reverse().slice(0,6);
+  document.getElementById("recent-list").innerHTML=txs.length?txs.map(txItem).join(""):"<div class='empty'>Операцій ще немає</div>";
 }
 
-// ══════════════════════════════════════════
-// ЦІНИ
-// ══════════════════════════════════════════
-function getPrices(d){
-  return d.prices || DEFAULT_DATA.prices;
-}
-function calcPayout(good, owner, d){
-  const p = getPrices(d);
-  if(good==='кава')     return owner==='volodymyr' ? p.kava_buy     : p.kava_sell  - p.commission;
-  if(good==='комплект') return owner==='volodymyr' ? p.komplex_buy  : p.komplex_sell - p.commission;
-  if(good==='молоко' || good==='айріш') return owner==='vygran' ? p.milk_commission : 0;
-  return 0;
-}
-function calcSellPrice(good, d){
-  const p = getPrices(d);
-  if(good==='кава') return p.kava_sell;
-  if(good==='комплект') return p.komplex_sell;
-  return 0;
-}
-
-// ══════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════
-function renderDashboard(){
-  const d = loadData();
-  const b = d.balance || 0;
-  const amEl = document.getElementById('bal-amount');
-  const whoEl = document.getElementById('bal-who');
-  const descEl = document.getElementById('bal-desc');
-
-  amEl.className = 'balance-amount';
-  if(Math.abs(b) < 1){
-    amEl.textContent = '✅ Зведено';
-    amEl.classList.add('clear');
-    whoEl.textContent = 'БАЛАНС';
-    descEl.textContent = 'Рахунки зведені';
-  } else if(b > 0){
-    amEl.textContent = fmt(b);
-    amEl.classList.add('');
-    whoEl.textContent = 'ВИГРАН ВИНЕН';
-    descEl.textContent = 'Коля винен Володимиру';
-  } else {
-    amEl.textContent = fmt(b);
-    amEl.classList.add('owed');
-    whoEl.textContent = 'ВОЛОДИМИР ВИНЕН';
-    descEl.textContent = 'Володимир винен Колі';
-  }
-
-  // Прибуток
-  const sm = d.stats?.my  || {};
-  const sh = d.stats?.his || {};
-  const p  = getPrices(d);
-  const profit =
-    (sm.кава||0)*p.commission + (sm.комплект||0)*p.commission +
-    (sh.кава||0)*p.commission + (sh.комплект||0)*p.commission +
-    (sh.молоко||0)*p.milk_commission + (sh.айріш||0)*p.milk_commission +
-    (sm.кава||0)*(p.kava_sell - p.kava_buy - p.commission) +
-    (sm.комплект||0)*(p.komplex_sell - p.komplex_buy - p.commission);
-
-  document.getElementById('s-profit').textContent = fmt(profit);
-  document.getElementById('s-my-sales').textContent = ((sm.кава||0)+(sm.комплект||0)) + ' шт';
-  document.getElementById('s-his-sales').textContent = ((sh.кава||0)+(sh.комплект||0)) + ' шт';
-  document.getElementById('s-txcount').textContent = (d.transactions||[]).length;
-
-  // Деталі прибутку
-  const profitEl = document.getElementById('profit-details');
-  profitEl.innerHTML = [
-    ['Кава мої точки', (sm.кава||0), (p.kava_sell-p.kava_buy)],
-    ['Комплекти мої', (sm.комплект||0), (p.komplex_sell-p.komplex_buy)],
-    ['Кава Колі', (sh.кава||0), p.commission],
-    ['Комплекти Колі', (sh.комплект||0), p.commission],
-    ['Молоко/Айріш Колі', (sh.молоко||0)+(sh.айріш||0), p.milk_commission],
-  ].map(([lbl,qty,per])=>`
-    <div class="profit-row">
-      <span class="lbl">${lbl} (${qty} шт × ${per} грн)</span>
-      <span class="val">${fmt(qty*per)}</span>
-    </div>`).join('');
-
-  // Графік балансу
-  buildBalanceChart(d);
-
-  // Останні операції
-  const txs = [...(d.transactions||[])].reverse().slice(0,5);
-  document.getElementById('recent-tbody').innerHTML = txs.map(t=>txRow(t)).join('');
-}
-
-function buildBalanceChart(d){
-  const txs = d.transactions || [];
-  if(!txs.length){ if(balChart){balChart.destroy();balChart=null;} return; }
-  const labels=[], vals=[];
-  let rb=0;
-  txs.forEach(t=>{ rb+=t.balance_delta||0; labels.push(t.date?.slice(5,10)||''); vals.push(+rb.toFixed(2)); });
-  const ctx = document.getElementById('chart-balance').getContext('2d');
-  if(balChart) balChart.destroy();
-  balChart = new Chart(ctx,{
-    type:'line',
-    data:{labels,datasets:[{
-      label:'Баланс (грн)',data:vals,
-      borderColor:'#d4863a',backgroundColor:'rgba(212,134,58,.12)',
-      borderWidth:2,pointRadius:2,tension:.35,fill:true,
-    }]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{color:'#8a6a4a',font:{size:10}},grid:{color:'#1f1915'}},
-        y:{ticks:{color:'#8a6a4a',font:{size:10}},grid:{color:'#1f1915'}},
-      }
-    }
+function bldBal(d){
+  const txs=d.transactions||[];
+  if(!txs.length){if(BC){BC.destroy();BC=null;}return;}
+  const labels=[],vals=[];let rb=0;
+  txs.forEach(t=>{rb+=(t.balance_delta||0);labels.push(t.date?.slice(0,5)||"");vals.push(+rb.toFixed(0));});
+  const ctx=document.getElementById("chart-bal").getContext("2d");
+  if(BC)BC.destroy();
+  const g=ctx.createLinearGradient(0,0,0,175);
+  g.addColorStop(0,"rgba(200,136,58,.22)");g.addColorStop(1,"rgba(200,136,58,.01)");
+  BC=new Chart(ctx,{type:"line",
+    data:{labels,datasets:[{data:vals,borderColor:"#C8883A",backgroundColor:g,borderWidth:2,pointRadius:0,pointHoverRadius:3,tension:.4,fill:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>fmt(v.raw)}}},
+      scales:{x:{ticks:{color:"#5A4830",font:{size:9},maxTicksLimit:6},grid:{color:"rgba(42,32,24,.7)"}},
+              y:{ticks:{color:"#5A4830",font:{size:9},callback:v=>(Math.abs(v)/1000).toFixed(0)+"к"},grid:{color:"rgba(42,32,24,.7)"}}}}
   });
 }
 
-// ══════════════════════════════════════════
-// ФОРМА ДОДАВАННЯ
-// ══════════════════════════════════════════
+const TICO={sale:"☕",supply:"📥",payment:"💸",rent:"🏠",equipment:"🔧",delivery:"🚚"};
+const TLBL={sale:"Продаж",supply:"Постачання",payment:"Виплата",rent:"Оренда",equipment:"Обладнання",delivery:"Доставка"};
+function txItem(t){
+  const sgn=t.balance_delta>=0?"+":"−";
+  const cls=t.balance_delta>0?"pos":t.balance_delta<0?"neg":"neu";
+  return `<div class="txi"><div class="txic ${t.type}">${TICO[t.type]||"•"}</div><div class="txb"><div class="txd">${t.description||""}</div><div class="txdt">${t.date||""} <span class="badge badge-${t.type}">${TLBL[t.type]||t.type}</span></div></div><div class="txa ${cls}">${sgn}${fmt(Math.abs(t.balance_delta||0))}</div></div>`;
+}
+
+function renderHistory(){
+  const d=ld();
+  const ft=document.getElementById("ft")?.value||"";
+  const fs=(document.getElementById("fs")?.value||"").toLowerCase();
+  let txs=[...(d.transactions||[])].reverse();
+  if(ft)txs=txs.filter(t=>t.type===ft);
+  if(fs)txs=txs.filter(t=>(t.description||"").toLowerCase().includes(fs));
+  const el=document.getElementById("hist-list"),em=document.getElementById("hist-empty");
+  if(txs.length){el.innerHTML=txs.map(txItem).join("");em.style.display="none";}
+  else{el.innerHTML="";em.style.display="block";}
+}
+
+function rStock(){
+  const d=ld();const s=d.stock||{};
+  const em={кава:"☕",комплект:"📦",молоко:"🥛",айріш:"🍹",стакан110:"🥤",стакан250:"🥤"};
+  document.getElementById("stock-grid").innerHTML=Object.entries(s).map(([g,q])=>`<div class="sc ${q<=5?"low":""}"><div class="se">${em[g]||"📦"}</div><div class="sn">${g}</div><div class="sq ${q<=5?"low":""}">${q}</div>${q<=5?"<div class='sw'>⚠️ Мало</div>":"<div style='height:14px'></div>"}</div>`).join("");
+  const sm=d.stats?.my||{},sh=d.stats?.his||{};
+  const ctx=document.getElementById("chart-sales").getContext("2d");
+  if(SC)SC.destroy();
+  SC=new Chart(ctx,{type:"bar",
+    data:{labels:["Кава","Комплекти","Молоко","Айріш"],datasets:[
+      {label:"Мої точки",data:[sm.кава||0,sm.комплект||0,sm.молоко||0,sm.айріш||0],backgroundColor:"rgba(200,136,58,.7)",borderRadius:6,borderSkipped:false},
+      {label:"Точки Колі",data:[sh.кава||0,sh.комплект||0,sh.молоко||0,sh.айріш||0],backgroundColor:"rgba(74,136,184,.65)",borderRadius:6,borderSkipped:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:"#7A6548",font:{size:11},boxWidth:10}}},
+      scales:{x:{ticks:{color:"#5A4830"},grid:{color:"rgba(42,32,24,.7)"}},y:{ticks:{color:"#5A4830",font:{size:9}},grid:{color:"rgba(42,32,24,.7)"}}}}
+  });
+}
+
+function rPts(){
+  const d=ld();const pts=d.points||{};
+  document.getElementById("pts-v").innerHTML=Object.entries(pts).filter(([,o])=>o==="volodymyr").map(([p])=>`<span class="pchip">${p}</span>`).join("");
+  document.getElementById("pts-k").innerHTML=Object.entries(pts).filter(([,o])=>o==="vygran").map(([p])=>`<span class="pchip">${p}</span>`).join("");
+}
+function addPoint(){
+  const n=document.getElementById("np-name").value.trim();const o=document.getElementById("np-own").value;
+  if(!n){toast("Введи назву","error");return;}
+  const d=ld();d.points[n]=o;sd(d);document.getElementById("np-name").value="";fillPts();rPts();toast("✅ Точка додана","success");
+}
+
+function rCl(){
+  const d=ld();const cl=d.clients||{};const el=document.getElementById("cl-list");
+  const en=Object.entries(cl);
+  if(!en.length){el.innerHTML="<div class='empty' style='padding:20px'>Клієнтів немає</div>";return;}
+  const tot=en.reduce((s,[,c])=>s+(c.debt||0),0);
+  el.innerHTML=en.sort((a,b)=>(b[1].debt||0)-(a[1].debt||0)).map(([n,c])=>{
+    const debt=c.debt||0;
+    return `<div class="txi" style="margin-bottom:5px">
+      <div class="txic payment" style="font-size:.9rem">👤</div>
+      <div class="txb"><div class="txd">${n}</div>
+        <div class="txdt">${debt>0?"Борг: <b style=color:var(--red)>"+fmt(debt)+"</b>":"✅ Чисто"}</div>
+      </div>
+      <div style="display:flex;gap:5px">
+        <button class="btn btn-g" style="padding:5px 9px;font-size:.7rem" onclick="payCl('${n}')">💸</button>
+        <button class="btn btn-g" style="padding:5px 9px;font-size:.7rem;color:var(--red)" onclick="delCl('${n}')">🗑️</button>
+      </div></div>`;
+  }).join("")+(tot>0?`<div style="text-align:right;padding-top:7px;font-size:.8rem;color:var(--muted)">Загалом: <b style="color:var(--red)">${fmt(tot)}</b></div>`:"");
+}
+function addClient(){
+  const n=document.getElementById("nc-name").value.trim();const debt=parseFloat(document.getElementById("nc-debt").value)||0;
+  if(!n){toast("Введи ім'я","error");return;}
+  const d=ld();d.clients=d.clients||{};d.clients[n]={debt,history:[]};sd(d);rCl();
+  document.getElementById("nc-name").value="";document.getElementById("nc-debt").value="";
+  toast("✅ Клієнт доданий","success");
+}
+function payCl(n){
+  const a=parseFloat(prompt("Скільки заплатив "+n+"? (грн)"));if(!a||isNaN(a))return;
+  const d=ld();const c=d.clients?.[n];if(!c)return;
+  c.debt=Math.max(0,(c.debt||0)-a);sd(d);rCl();toast("✅ "+n+" заплатив "+fmt(a),"success");
+}
+function delCl(n){
+  if(!confirm("Видалити "+n+"?"))return;const d=ld();delete d.clients[n];sd(d);rCl();toast("🗑️ Видалено","info");
+}
+
 function onOpType(){
-  const t = document.getElementById('op-type').value;
-  ['sale','supply','payment','expense'].forEach(f=>{
-    document.getElementById('form-'+f).style.display = 'none';
-  });
-  if(['rent','equipment','delivery'].includes(t)){
-    document.getElementById('form-expense').style.display = 'block';
-    const hints = {rent:'Витрата ділиться навпіл — кожен платить половину.',
-                   equipment:'Обладнання на спільне — ділиться навпіл.',
-                   delivery:'Доставка ділиться навпіл.'};
-    document.getElementById('exp-hint').textContent = hints[t]||'';
-  } else {
-    document.getElementById('form-'+t).style.display = 'block';
-  }
+  const t=document.getElementById("op-type").value;
+  ["sale","supply","payment","expense"].forEach(f=>document.getElementById("form-"+f).style.display="none");
+  if(["rent","equipment","delivery"].includes(t))document.getElementById("form-expense").style.display="block";
+  else document.getElementById("form-"+t).style.display="block";
 }
-
-function populatePointSelect(){
-  const d = loadData();
-  const sel = document.getElementById('sale-point');
-  sel.innerHTML = Object.keys(d.points).map(p=>`<option value="${p}">${p}</option>`).join('');
-  onPointChange();
+function fillPts(){
+  const d=ld();const sel=document.getElementById("sale-point");
+  sel.innerHTML=Object.keys(d.points).map(p=>`<option value="${p}">${p}</option>`).join("");
+  onPtCh();
 }
-
-function onPointChange(){
-  const d     = loadData();
-  const point = document.getElementById('sale-point').value;
-  const owner = d.points[point];
-  document.getElementById('sale-owner-disp').value =
-    owner === 'volodymyr' ? '👤 Мій (Володимир)' : '👤 Колі';
-  fillDefaultPrices();
-  updateSalePreview();
+function onPtCh(){
+  const d=ld();const pt=document.getElementById("sale-point").value;const o=d.points[pt];
+  document.getElementById("sale-own").value=o==="volodymyr"?"👤 Мій (Володимир)":"👤 Колі";
+  fillDef();updPrev();
 }
-
-function onGoodChange(){
-  fillDefaultPrices();
-  updateSalePreview();
+function onGdCh(){fillDef();updPrev();}
+function fillDef(){
+  const d=ld();const pt=document.getElementById("sale-point")?.value;const g=document.getElementById("sale-good")?.value;if(!pt||!g)return;
+  const o=d.points[pt];const sell=csp(g,d);const pay=cpay(g,o,d);
+  document.getElementById("sale-sell").value=sell||"";document.getElementById("sale-pay").value=pay||"";
+  const p=gp(d);const h=document.getElementById("price-hint");
+  const ht={кава:`Стандарт: продаж ${p.kava_sell}, виплата ${o==="volodymyr"?p.kava_buy:p.kava_sell-p.commission} грн`,
+    комплект:`Стандарт: продаж ${p.komplex_sell}, виплата ${o==="volodymyr"?p.komplex_buy:p.komplex_sell-p.commission} грн`,
+    молоко:`Комісія ${o==="vygran"?p.milk_commission:0} грн/шт`,
+    айріш:`Комісія ${o==="vygran"?p.milk_commission:0} грн/шт`}[g]||"";
+  h.textContent=ht;h.style.display=ht?"block":"none";
 }
-
-function fillDefaultPrices(){
-  const d     = loadData();
-  const point = document.getElementById('sale-point')?.value;
-  const good  = document.getElementById('sale-good')?.value;
-  if(!point||!good) return;
-  const owner  = d.points[point];
-  const sell   = calcSellPrice(good, d);
-  const payout = calcPayout(good, owner, d);
-
-  document.getElementById('sale-sell-price').value   = sell   || '';
-  document.getElementById('sale-payout-price').value = payout || '';
-
-  // Підказка — стандартні ціни
-  const p = getPrices(d);
-  const hints = {
-    кава:     `Стандарт: продаж ${p.kava_sell} грн, виплата ${owner==='volodymyr'?p.kava_buy:p.kava_sell-p.commission} грн`,
-    комплект: `Стандарт: продаж ${p.komplex_sell} грн, виплата ${owner==='volodymyr'?p.komplex_buy:p.komplex_sell-p.commission} грн`,
-    молоко:   `Стандарт: виплата ${owner==='vygran'?p.milk_commission:0} грн за шт`,
-    айріш:    `Стандарт: виплата ${owner==='vygran'?p.milk_commission:0} грн за шт`,
-  };
-  document.getElementById('price-hint').textContent = hints[good]||'';
-}
-
-function updateSalePreview(){
-  const point  = document.getElementById('sale-point')?.value;
-  const good   = document.getElementById('sale-good')?.value;
-  const qty    = parseInt(document.getElementById('sale-qty')?.value)||0;
-  const sell   = parseFloat(document.getElementById('sale-sell-price')?.value)||0;
-  const payout = parseFloat(document.getElementById('sale-payout-price')?.value)||0;
-
-  if(!point||!good||!qty){
-    document.getElementById('sale-preview').innerHTML='';
-    return;
-  }
-  const d     = loadData();
-  const defSell   = calcSellPrice(good, d);
-  const defPayout = calcPayout(good, d.points[point], d);
-
-  const rev  = sell * qty;
-  const pay  = payout * qty;
-  const earn = rev - pay;
-
-  const sellChanged   = sell   !== defSell   && defSell   > 0;
-  const payoutChanged = payout !== defPayout && defPayout > 0;
-
-  document.getElementById('sale-preview').innerHTML =
-    `💵 Виручка: <b style="color:var(--cream)">${fmt(rev)}</b>`+
-    (sellChanged ? ` <span style="color:var(--gold);font-size:.75rem">⚡ змінена</span>` : '')+
-    `&nbsp;&nbsp;Колі: <b style="color:var(--red)">${fmt(pay)}</b>`+
-    (payoutChanged ? ` <span style="color:var(--gold);font-size:.75rem">⚡ змінена</span>` : '')+
-    `&nbsp;&nbsp;💚 Заробіток: <b style="color:var(--green)">${fmt(earn)}</b>`+
-    `<br><span style="font-size:.75rem;color:var(--muted)">${qty} шт × ${sell} грн продаж / ${payout} грн виплата</span>`;
+function updPrev(){
+  const pt=document.getElementById("sale-point")?.value;const g=document.getElementById("sale-good")?.value;
+  const qty=parseInt(document.getElementById("sale-qty")?.value)||0;
+  const sell=parseFloat(document.getElementById("sale-sell")?.value)||0;
+  const pay=parseFloat(document.getElementById("sale-pay")?.value)||0;
+  const pr=document.getElementById("sale-prev");
+  if(!pt||!g||!qty){pr.style.display="none";return;}
+  const earn=sell*qty-pay*qty;
+  pr.style.display="block";
+  pr.innerHTML=`<b style="color:var(--cream)">${fmt(sell*qty)}</b> виручка &nbsp;·&nbsp; <span style="color:var(--red)">${fmt(pay*qty)}</span> Колі &nbsp;·&nbsp; <b style="color:var(--green)">${fmt(earn)}</b> заробіток<br><span style="color:var(--muted);font-size:.7rem">${qty} шт × ${sell} грн продаж / ${pay} грн виплата</span>`;
 }
 
 function addSale(){
-  const d      = loadData();
-  const point  = document.getElementById('sale-point').value;
-  const good   = document.getElementById('sale-good').value;
-  const qty    = parseInt(document.getElementById('sale-qty').value)||0;
-  const sell   = parseFloat(document.getElementById('sale-sell-price').value)||calcSellPrice(good,d);
-  const payout = parseFloat(document.getElementById('sale-payout-price').value)||calcPayout(good,d.points[point],d);
-
-  if(!qty||qty<1){ toast('Введи кількість','error'); return; }
-
-  const owner     = d.points[point];
-  const pay_total = payout * qty;
-  const rev_total = sell * qty;
-
-  // Позначаємо якщо ціна нестандартна
-  const defSell   = calcSellPrice(good, d);
-  const defPayout = calcPayout(good, owner, d);
-  const customPrice = (sell !== defSell && defSell > 0) || (payout !== defPayout && defPayout > 0);
-
-  if(good in d.stock) d.stock[good] = Math.max(0, (d.stock[good]||0) - qty);
-  const sk = owner==='volodymyr' ? 'my' : 'his';
-  if(good in d.stats[sk]) d.stats[sk][good] = (d.stats[sk][good]||0) + qty;
-
-  const desc = `Продаж ${point}: ${qty} ${good}`+
-    (customPrice ? ` (ціна ${sell} грн, виплата ${payout} грн/шт)` : '');
-
-  addTx(d, 'sale', desc, pay_total, -pay_total,
-    {point, owner, items:{[good]:qty}, sell_price:sell, payout_price:payout,
-     revenue:rev_total, custom_price:customPrice});
-
-  // Скидаємо форму
-  document.getElementById('sale-qty').value = 1;
-  fillDefaultPrices();
-
-  toast(`✅ ${qty} ${good} — ${point}${customPrice?' (нестандартна ціна)':''}`, 'success');
-  renderAll();
+  const d=ld();const pt=document.getElementById("sale-point").value;const g=document.getElementById("sale-good").value;
+  const qty=parseInt(document.getElementById("sale-qty").value)||0;
+  const sell=parseFloat(document.getElementById("sale-sell").value)||csp(g,d);
+  const pay=parseFloat(document.getElementById("sale-pay").value)||cpay(g,d.points[pt],d);
+  if(!qty||qty<1){toast("Введи кількість","error");return;}
+  const o=d.points[pt];const pt_=pay*qty;
+  if(g in d.stock)d.stock[g]=Math.max(0,(d.stock[g]||0)-qty);
+  const sk=o==="volodymyr"?"my":"his";if(g in d.stats[sk])d.stats[sk][g]=(d.stats[sk][g]||0)+qty;
+  addTx(d,"sale","Продаж "+pt+": "+qty+" "+g,pt_,-pt_,{point:pt,owner:o,items:{[g]:qty},sell_price:sell,revenue:sell*qty});
+  document.getElementById("sale-qty").value=1;fillDef();toast("✅ "+qty+" "+g+" — "+pt,"success");ra();
 }
-
 function addSupply(){
-  const d = loadData();
-  const items = {};
-  const fields = {кава:'sup-kava',комплект:'sup-komplex',молоко:'sup-moloko',
-                  айріш:'sup-irish',стакан110:'sup-st110',стакан250:'sup-st250'};
-  let total = parseFloat(document.getElementById('sup-amount').value)||0;
-  let hasItems = false;
-  for(const [good,fid] of Object.entries(fields)){
-    const q = parseInt(document.getElementById(fid).value)||0;
-    if(q>0){ items[good]=q; d.stock[good]=(d.stock[good]||0)+q; hasItems=true; }
-  }
-  if(!hasItems){ toast('Введи хоча б один товар','error'); return; }
-  if(!total){
-    const p = getPrices(d);
-    total = (items.кава||0)*p.kava_buy + (items.комплект||0)*p.komplex_buy;
-  }
-  addTx(d,'supply',`Постачання: ${Object.entries(items).map(([g,q])=>`${g} ${q}`).join(', ')}`,
-        total,-total,{items});
-  toast('✅ Постачання записано','success');
-  renderAll();
+  const d=ld();const items={};
+  const flds={кава:"sup-kava",комплект:"sup-komp",молоко:"sup-mol",айріш:"sup-irish",стакан110:"sup-st1",стакан250:"sup-st2"};
+  let tot=parseFloat(document.getElementById("sup-amt").value)||0;let hasIt=false;
+  for(const [g,fid] of Object.entries(flds)){const q=parseInt(document.getElementById(fid).value)||0;if(q>0){items[g]=q;d.stock[g]=(d.stock[g]||0)+q;hasIt=true;}}
+  if(!hasIt){toast("Введи хоча б один товар","error");return;}
+  const changes=[];
+  const kb=parseFloat(document.getElementById("sup-kb").value)||0;const ks=parseFloat(document.getElementById("sup-ks").value)||0;
+  const cb=parseFloat(document.getElementById("sup-cb").value)||0;const cs=parseFloat(document.getElementById("sup-cs").value)||0;
+  if(kb&&ks){d.prices=d.prices||{};d.prices.kava_buy=kb;d.prices.kava_sell=ks;changes.push("кава "+kb+"/"+ks);}
+  if(cb&&cs){d.prices=d.prices||{};d.prices.komplex_buy=cb;d.prices.komplex_sell=cs;changes.push("компл "+cb+"/"+cs);}
+  if(!tot){const p=gp(d);tot=(items.кава||0)*p.kava_buy+(items.комплект||0)*p.komplex_buy;}
+  const desc="Постачання: "+Object.entries(items).map(([g,q])=>g+" "+q).join(", ")+(changes.length?" (ціни: "+changes.join(", ")+")"  :"");
+  addTx(d,"supply",desc,tot,-tot,{items});
+  ["sup-kava","sup-komp","sup-mol","sup-irish","sup-st1","sup-st2","sup-amt","sup-kb","sup-ks","sup-cb","sup-cs"].forEach(id=>document.getElementById(id).value="");
+  toast("✅ Постачання записано"+(changes.length?" · ціни оновлено":""),"success");ra();
 }
-
 function addPayment(){
-  const d      = loadData();
-  const payer  = document.getElementById('pay-payer').value;
-  const amount = parseFloat(document.getElementById('pay-amount').value)||0;
-  const comment= document.getElementById('pay-comment').value;
-  if(!amount||amount<1){ toast('Введи суму','error'); return; }
-  const delta  = payer==='volodymyr' ? amount : -amount;
-  const desc   = payer==='volodymyr'
-    ? `💸 Володимир → Колі: ${fmt(amount)}${comment?' ('+comment+')':''}`
-    : `💸 Коля → Володимиру: ${fmt(amount)}${comment?' ('+comment+')':''}`;
-  addTx(d,'payment',desc,amount,delta,{payer,comment});
-  document.getElementById('pay-amount').value='';
-  document.getElementById('pay-comment').value='';
-  toast('✅ Виплату записано','success');
-  renderAll();
+  const d=ld();const who=document.getElementById("pay-who").value;
+  const amt=parseFloat(document.getElementById("pay-amt").value)||0;const cmt=document.getElementById("pay-cmt").value;
+  if(!amt||amt<1){toast("Введи суму","error");return;}
+  const delta=who==="volodymyr"?amt:-amt;
+  const desc=who==="volodymyr"?"💸 Володимир → Колі: "+fmt(amt)+(cmt?" ("+cmt+")"):"":"💸 Коля → Володимиру: "+fmt(amt)+(cmt?" ("+cmt+")":"");
+  addTx(d,"payment",desc,amt,delta,{payer:who,comment:cmt});
+  document.getElementById("pay-amt").value="";document.getElementById("pay-cmt").value="";
+  toast("✅ Виплату записано","success");ra();
 }
-
 function addExpense(){
-  const d      = loadData();
-  const etype  = document.getElementById('op-type').value;
-  const payer  = document.getElementById('exp-payer').value;
-  const amount = parseFloat(document.getElementById('exp-amount').value)||0;
-  const comment= document.getElementById('exp-comment').value;
-  if(!amount||amount<1){ toast('Введи суму','error'); return; }
-  const half   = amount/2;
-  const delta  = payer==='vygran' ? -half : half;
-  const names  = {rent:'Оренда',equipment:'Обладнання',delivery:'Доставка'};
-  const desc   = `${names[etype]||etype}: ${fmt(amount)} (платив ${payer==='vygran'?'Коля':'Володимир'})${comment?' — '+comment:''}`;
-  addTx(d,etype,desc,amount,delta,{payer,comment});
-  document.getElementById('exp-amount').value='';
-  document.getElementById('exp-comment').value='';
-  toast('✅ Витрату записано','success');
-  renderAll();
+  const d=ld();const et=document.getElementById("op-type").value;const who=document.getElementById("exp-who").value;
+  const amt=parseFloat(document.getElementById("exp-amt").value)||0;const cmt=document.getElementById("exp-cmt").value;
+  if(!amt||amt<1){toast("Введи суму","error");return;}
+  const half=amt/2;const delta=who==="vygran"?-half:half;
+  const nm={rent:"Оренда",equipment:"Обладнання",delivery:"Доставка"};
+  const desc=(nm[et]||et)+": "+fmt(amt)+" (платив "+(who==="vygran"?"Коля":"Володимир")+")"+(cmt?" — "+cmt:"");
+  addTx(d,et,desc,amt,delta,{payer:who,comment:cmt});
+  document.getElementById("exp-amt").value="";document.getElementById("exp-cmt").value="";
+  toast("✅ Витрату записано","success");ra();
+}
+function addTx(d,type,desc,amt,delta,meta){
+  const tx={id:(d.transactions.length+1),date:new Date().toLocaleString("uk-UA",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}).replace(",",""),type,description:desc,amount:+amt.toFixed(2),balance_delta:+delta.toFixed(2),meta:meta||{}};
+  d.transactions.push(tx);d.balance=+((d.balance||0)+delta).toFixed(2);sd(d);
 }
 
-function addTx(d, type, desc, amount, delta, meta){
-  const tx = {
-    id: (d.transactions.length+1),
-    date: new Date().toLocaleString('uk-UA',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).replace(',',''),
-    type, description:desc, amount:+amount.toFixed(2),
-    balance_delta:+delta.toFixed(2), meta:meta||{}
-  };
-  d.transactions.push(tx);
-  d.balance = +(( d.balance||0)+delta).toFixed(2);
-  saveData(d);
+function ldSet(){
+  const el=document.getElementById("srv-tok");if(el)el.value=TOK;
+  const d=ld();const p=gp(d);
+  document.getElementById("p-kb").value=p.kava_buy||530;document.getElementById("p-ks").value=p.kava_sell||700;
+  document.getElementById("p-cb").value=p.komplex_buy||680;document.getElementById("p-cs").value=p.komplex_sell||850;
+  document.getElementById("p-com").value=p.commission||70;document.getElementById("p-milk").value=p.milk_commission||100;
 }
-
-// ══════════════════════════════════════════
-// HISTORY
-// ══════════════════════════════════════════
-function renderHistory(){
-  const d    = loadData();
-  const ft   = document.getElementById('filter-type')?.value||'';
-  const fs   = (document.getElementById('filter-search')?.value||'').toLowerCase();
-  let txs    = [...(d.transactions||[])].reverse();
-  if(ft) txs = txs.filter(t=>t.type===ft);
-  if(fs) txs = txs.filter(t=>t.description.toLowerCase().includes(fs));
-  document.getElementById('history-tbody').innerHTML = txs.map(t=>txRowFull(t)).join('');
-}
-
-function txRow(t){
-  const sign = t.balance_delta>=0?'+':'';
-  return `<tr>
-    <td style="color:var(--muted);font-size:.75rem">${t.date||''}</td>
-    <td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td>
-    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.description||''}</td>
-    <td style="font-family:'JetBrains Mono',monospace">${fmt(t.amount||0)}</td>
-    <td class="${t.balance_delta>=0?'pos':'neg'}" style="font-family:'JetBrains Mono',monospace">${sign}${fmt(t.balance_delta||0)}</td>
-  </tr>`;
-}
-
-function txRowFull(t){
-  const sign = t.balance_delta>=0?'+':'';
-  return `<tr>
-    <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.75rem">#${t.id}</td>
-    <td style="color:var(--muted);font-size:.75rem;white-space:nowrap">${t.date||''}</td>
-    <td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td>
-    <td style="font-size:.8rem">${t.description||''}</td>
-    <td style="font-family:'JetBrains Mono',monospace;white-space:nowrap">${fmt(t.amount||0)}</td>
-    <td class="${t.balance_delta>=0?'pos':'neg'}" style="font-family:'JetBrains Mono',monospace;white-space:nowrap">${sign}${fmt(t.balance_delta||0)}</td>
-  </tr>`;
-}
-
-function typeLabel(t){
-  return {sale:'☕ Продаж',supply:'📥 Постач.',payment:'💸 Виплата',
-          rent:'🏠 Оренда',equipment:'🔧 Обладн.',delivery:'🚚 Доставка'}[t]||t;
-}
-
-// ══════════════════════════════════════════
-// STOCK
-// ══════════════════════════════════════════
-function renderStock(){
-  const d = loadData();
-  const s = d.stock||{};
-  const em = {кава:'☕',комплект:'📦',молоко:'🥛',айріш:'🍹',стакан110:'🥤',стакан250:'🥤'};
-  document.getElementById('stock-grid').innerHTML = Object.entries(s).map(([g,q])=>`
-    <div class="stock-item ${q<=3?'low':''}">
-      <div class="stock-emoji">${em[g]||'📦'}</div>
-      <div class="stock-name">${g}</div>
-      <div class="stock-qty ${q<=3?'low':''}">${q}</div>
-      ${q<=3?'<div class="stock-warn">⚠️ Мало!</div>':'<div style="height:16px"></div>'}
-    </div>`).join('');
-
-  // Графік продажів
-  const sm = d.stats?.my||{};
-  const sh = d.stats?.his||{};
-  const ctx = document.getElementById('chart-sales').getContext('2d');
-  if(salesChart) salesChart.destroy();
-  salesChart = new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:['Кава','Комплекти','Молоко','Айріш'],
-      datasets:[
-        {label:'Мої точки',data:[sm.кава||0,sm.комплект||0,sm.молоко||0,sm.айріш||0],backgroundColor:'rgba(212,134,58,.7)',borderRadius:6},
-        {label:'Точки Колі',data:[sh.кава||0,sh.комплект||0,sh.молоко||0,sh.айріш||0],backgroundColor:'rgba(90,159,212,.7)',borderRadius:6},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#8a6a4a',font:{size:11}}}},
-      scales:{
-        x:{ticks:{color:'#8a6a4a'},grid:{color:'#1f1915'}},
-        y:{ticks:{color:'#8a6a4a'},grid:{color:'#1f1915'}},
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════
-// POINTS
-// ══════════════════════════════════════════
-function renderPoints(){
-  const d   = loadData();
-  const pts = d.points||{};
-  document.getElementById('pts-vol').innerHTML = Object.entries(pts)
-    .filter(([,o])=>o==='volodymyr')
-    .map(([p])=>`<span class="point-tag"><span class="point-dot dot-vol"></span>${p}</span>`).join('');
-  document.getElementById('pts-vyg').innerHTML = Object.entries(pts)
-    .filter(([,o])=>o==='vygran')
-    .map(([p])=>`<span class="point-tag"><span class="point-dot dot-vyg"></span>${p}</span>`).join('');
-}
-
-function addPoint(){
-  const name  = document.getElementById('new-point-name').value.trim();
-  const owner = document.getElementById('new-point-owner').value;
-  if(!name){ toast('Введи назву точки','error'); return; }
-  const d = loadData();
-  d.points[name] = owner;
-  saveData(d);
-  document.getElementById('new-point-name').value='';
-  populatePointSelect();
-  renderPoints();
-  toast(`✅ Точка "${name}" додана`,'success');
-}
-
-// ══════════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════════
-function loadPriceSettings(){
-  loadServerTokenInput();
-  const d = loadData();
-  const p = getPrices(d);
-  document.getElementById('p-kava-buy').value       = p.kava_buy||530;
-  document.getElementById('p-kava-sell').value      = p.kava_sell||700;
-  document.getElementById('p-komplex-buy').value    = p.komplex_buy||680;
-  document.getElementById('p-komplex-sell').value   = p.komplex_sell||850;
-  document.getElementById('p-commission').value     = p.commission||70;
-  document.getElementById('p-milkcommission').value = p.milk_commission||100;
-}
-
 function savePrices(){
-  const d = loadData();
-  d.prices = {
-    kava_buy:     +document.getElementById('p-kava-buy').value||530,
-    kava_sell:    +document.getElementById('p-kava-sell').value||700,
-    komplex_buy:  +document.getElementById('p-komplex-buy').value||680,
-    komplex_sell: +document.getElementById('p-komplex-sell').value||850,
-    commission:   +document.getElementById('p-commission').value||70,
-    milk_commission: +document.getElementById('p-milkcommission').value||100,
-  };
-  saveData(d);
-  toast('✅ Ціни збережено','success');
+  const d=ld();d.prices={kava_buy:+document.getElementById("p-kb").value||530,kava_sell:+document.getElementById("p-ks").value||700,komplex_buy:+document.getElementById("p-cb").value||680,komplex_sell:+document.getElementById("p-cs").value||850,commission:+document.getElementById("p-com").value||70,milk_commission:+document.getElementById("p-milk").value||100};
+  sd(d);toast("✅ Ціни збережено","success");
 }
-
+function saveTok(){TOK=document.getElementById("srv-tok").value;localStorage.setItem("stok",TOK);toast("✅ Токен збережено","success");}
 function undoLast(){
-  const d  = loadData();
-  const tx = d.transactions.pop();
-  if(!tx){ toast('Немає операцій для скасування','error'); return; }
-  d.balance = +((d.balance||0) - (tx.balance_delta||0)).toFixed(2);
-  if(tx.type==='sale'){
-    const items = tx.meta?.items||{};
-    const owner = tx.meta?.owner;
-    for(const [g,q] of Object.entries(items)){
-      if(g in d.stock) d.stock[g]+=q;
-      const sk = owner==='volodymyr'?'my':'his';
-      if(d.stats[sk]&&g in d.stats[sk]) d.stats[sk][g]=Math.max(0,d.stats[sk][g]-q);
-    }
-  } else if(tx.type==='supply'){
-    for(const [g,q] of Object.entries(tx.meta?.items||{}))
-      if(g in d.stock) d.stock[g]=Math.max(0,d.stock[g]-q);
-  }
-  saveData(d);
-  toast(`↩️ Скасовано: ${tx.description?.slice(0,40)}`,'info');
-  renderAll();
+  const d=ld();const tx=d.transactions.pop();if(!tx){toast("Немає операцій","error");return;}
+  d.balance=+((d.balance||0)-(tx.balance_delta||0)).toFixed(2);
+  if(tx.type==="sale"){const items=tx.meta?.items||{};const o=tx.meta?.owner;for(const [g,q] of Object.entries(items)){if(g in d.stock)d.stock[g]+=q;const sk=o==="volodymyr"?"my":"his";if(d.stats[sk]&&g in d.stats[sk])d.stats[sk][g]=Math.max(0,d.stats[sk][g]-q);}}
+  else if(tx.type==="supply"){for(const [g,q] of Object.entries(tx.meta?.items||{}))if(g in d.stock)d.stock[g]=Math.max(0,d.stock[g]-q);}
+  sd(d);toast("↩️ Скасовано: "+(tx.description||"").slice(0,40),"info");ra();
 }
+function exportJSON(){const d=ld();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="kavobiz_"+new Date().toISOString().slice(0,10)+".json";a.click();}
+function importJSON(){document.getElementById("imp-file").click();}
+function doImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(!data.transactions)throw new Error("Невірний формат");localStorage.setItem("kavobiz",JSON.stringify(data));toast("✅ Дані імпортовано","success");ra();}catch(err){toast("❌ "+err.message,"error");}};r.readAsText(f);}
+function resetAll(){if(!confirm("Скинути ВСІ дані?"))return;localStorage.removeItem("kavobiz");toast("🗑️ Скинуто","info");ra();}
 
-function exportJSON(){
-  const d    = loadData();
-  const blob = new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
-  const a    = document.createElement('a');
-  a.href     = URL.createObjectURL(blob);
-  a.download = `kavobiz_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-}
+function toast(msg,type="info"){const el=document.getElementById("toast");el.textContent=msg;el.className="toast "+type+" show";setTimeout(()=>el.classList.remove("show"),3000);}
 
-function importJSON(){
-  document.getElementById('import-file').click();
-}
-
-function doImport(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if(!data.transactions) throw new Error('Невірний формат');
-      localStorage.setItem('kavobiz', JSON.stringify(data));
-      toast('✅ Дані імпортовано','success');
-      renderAll();
-    } catch(err) { toast('❌ Помилка імпорту: '+err.message,'error'); }
-  };
-  reader.readAsText(file);
-}
-
-function resetAll(){
-  if(!confirm('Скинути ВСІ дані? Це незворотно!')) return;
-  localStorage.removeItem('kavobiz');
-  toast('🗑️ Дані скинуто','info');
-  renderAll();
-}
-
-// ══════════════════════════════════════════
-// НАВІГАЦІЯ
-// ══════════════════════════════════════════
-function showTab(name){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  event.target.classList.add('active');
-  if(name==='dashboard') renderDashboard();
-  if(name==='stock') renderStock();
-  if(name==='history') renderHistory();
-  if(name==='points') renderPoints();
-  if(name==='add'){ populatePointSelect(); onOpType(); }
-}
-
-// ══════════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════════
-function toast(msg, type='info'){
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast ${type} show`;
-  setTimeout(()=>el.classList.remove('show'), 3000);
-}
-
-// ══════════════════════════════════════════
-// УТИЛІТИ
-// ══════════════════════════════════════════
-function fmt(v){ return Math.abs(v).toLocaleString('uk-UA',{maximumFractionDigits:0})+' грн'; }
-
-function saveServerToken(){
-  SERVER_TOKEN = document.getElementById('server-token-input').value;
-  localStorage.setItem('server_token', SERVER_TOKEN);
-}
-
-function loadServerTokenInput(){
-  const el = document.getElementById('server-token-input');
-  if(el) el.value = SERVER_TOKEN;
-}
-
-// INIT DEMO DATA (якщо порожньо)
-function initDemo(){
-  const d = loadData();
-  if(d.transactions.length===0){
-    // Кілька демо-операцій для відображення
-    addTx(d,'supply','Постачання: комплект 20, кава 10',16200,-16200,{items:{комплект:20,кава:10}});
-    d.stock.комплект=20; d.stock.кава=10;
-    addTx(d,'sale','Продаж Оляниця: 5 кав',3150,-3150,{point:'Оляниця',owner:'vygran',items:{кава:5}});
-    d.stock.кава-=5; d.stats.his.кава+=5;
-    addTx(d,'sale','Продаж Мурчик: 3 комплекти',2040,-2040,{point:'Мурчик',owner:'volodymyr',items:{комплект:3}});
-    d.stock.комплект-=3; d.stats.my.комплект+=3;
-    addTx(d,'payment','💸 Володимир → Колі: 10 000 грн',10000,10000,{payer:'volodymyr'});
-    saveData(d);
-  }
-}
-initDemo();
+// DEMO
+(function(){
+  const d=ld();if(d.transactions.length)return;
+  addTx(d,"supply","Постачання: комплект 20, кава 10",16200,-16200,{items:{комплект:20,кава:10}});
+  d.stock.комплект=20;d.stock.кава=10;
+  addTx(d,"sale","Продаж Оляниця: 5 кав",3150,-3150,{point:"Оляниця",owner:"vygran",items:{кава:5}});d.stock.кава-=5;d.stats.his.кава+=5;
+  addTx(d,"sale","Продаж Мурчик: 3 комплекти",2040,-2040,{point:"Мурчик",owner:"volodymyr",items:{комплект:3}});d.stock.комплект-=3;d.stats.my.комплект+=3;
+  addTx(d,"sale","Продаж Вдов: 8 кав",4240,-4240,{point:"Вдов",owner:"volodymyr",items:{кава:8}});d.stock.кава-=8;d.stats.my.кава+=8;
+  addTx(d,"payment","💸 Володимир → Колі: 10 000 грн",10000,10000,{payer:"volodymyr"});
+  sd(d);
+})();
 </script>
 </body>
 </html>
